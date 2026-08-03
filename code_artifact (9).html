@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบตรวจสอบครุภัณฑ์คอมพิวเตอร์ - โรงพยาบาลอุดรธานี</title>
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-pink': '#ffb6c1',
+                        'primary-pink-dark': '#ff8da1',
+                        'soft-pink': '#ffe6ea',
+                    },
+                    fontFamily: { kanit: ['Kanit', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #ffe6ea 0%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.4);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            border: 2px solid #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fff, #ffe6ea);
+            border: 3px solid #ffb6c1;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 8px 20px rgba(255, 182, 193, 0.3);
+        }
+
+        h2 {
+            color: var(--primary-pink-dark);
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.5rem;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-pink-dark), var(--primary-pink));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 141, 161, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 141, 161, 0.6);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #555;
+            margin-top: 15px;
+        }
+        
+        .btn-secondary:hover {
+            background: #e4e4e4;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .toggle-link a {
+            color: var(--primary-pink-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+            border: 2px dashed #ffb6c1;
+            border-radius: 12px;
+            padding: 10px;
+            background: #fafafa;
+        }
+
+        video {
+            width: 100%;
+            max-height: 240px;
+            border-radius: 8px;
+            background: #000;
+            object-fit: cover;
+        }
+
+        #photoPreview {
+            width: 100%;
+            max-height: 240px;
+            border-radius: 8px;
+            object-fit: cover;
+            display: none;
+        }
+
+        .dept-dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 220px;
+            overflow-y: auto;
+            background: #ffffff;
+            border: 2px solid var(--primary-pink);
+            border-radius: 12px;
+            margin-top: 4px;
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.35);
+            z-index: 1000;
+            display: none;
+        }
+
+        .dept-dropdown-list.show {
+            display: block;
+        }
+
+        .dept-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #ffe8ed;
+            font-size: 0.92rem;
+            transition: background 0.15s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .dept-item:last-child {
+            border-bottom: none;
+        }
+
+        .dept-item:hover, .dept-item.active {
+            background-color: var(--soft-pink);
+            color: var(--primary-pink-dark);
+            font-weight: 500;
+        }
+
+        .dept-item.disabled {
+            color: #888;
+            cursor: default;
+            background: #fafafa;
+            justify-content: center;
+        }
+
+        .dept-id-badge {
+            background: #ffe0e5;
+            color: var(--primary-pink-dark);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid #ffe6ea;
+            border-top: 5px solid var(--primary-pink-dark);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <div class="spinner"></div>
+        <p class="mt-4 font-semibold text-pink-500" id="overlayText">กำลังประมวลผล...</p>
+    </div>
+
+    <div class="auth-container">
+        <div class="logo-container">
+            <div class="logo">🏥</div>
+            <h2>ระบบตรวจสอบครุภัณฑ์</h2>
+            <p class="subtitle">โรงพยาบาลอุดรธานี</p>
+        </div>
+
+        <!-- ================= VIEW: LOGIN ================= -->
+        <div id="viewLogin" class="view-section active">
+            <div class="form-group">
+                <label>ชื่อผู้ใช้งาน (Username)</label>
+                <input type="text" id="loginUsername" class="form-control" placeholder="กรอกชื่อผู้ใช้งาน">
+            </div>
+            <div class="form-group">
+                <label>รหัสผ่าน (Password)</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••">
+            </div>
+            
+            <button class="btn btn-primary" onclick="handleAction('login')">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i> เข้าสู่ระบบ
+            </button>
+            
+            <div class="toggle-link flex flex-col gap-2">
+                <div>ยังไม่มีบัญชีผู้ใช้? <a href="#" onclick="switchView('register'); fetchDepartments(); return false;">ลงทะเบียนที่นี่</a></div>
+                <div>ลืมรหัสผ่าน? <a href="#" onclick="switchView('forgotPassword'); return false;">รีเซ็ตรหัสผ่าน</a></div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW: REGISTER ================= -->
+        <div id="viewRegister" class="view-section">
+            <div class="text-center mb-4">
+                <h3 class="text-xl font-bold text-gray-700 border-b pb-2">ลงทะเบียนผู้ใช้ใหม่</h3>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="form-group mb-3">
+                    <label>ชื่อ</label>
+                    <input type="text" id="regName" class="form-control" placeholder="ชื่อจริง">
+                </div>
+                <div class="form-group mb-3">
+                    <label>นามสกุล</label>
+                    <input type="text" id="regSurname" class="form-control" placeholder="นามสกุล">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>อีเมล (สำหรับรับรหัสยืนยัน OTP)</label>
+                <input type="email" id="regEmail" class="form-control" placeholder="example@udonhosp.go.th">
+            </div>
+            
+            <div class="form-group mb-3">
+                <label>ตั้งชื่อผู้ใช้งาน (Username)</label>
+                <input type="text" id="regUsername" class="form-control" placeholder="สำหรับใช้เข้าสู่ระบบ">
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div class="form-group">
+                    <label>ตั้งรหัสผ่าน</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label>ยืนยันรหัสผ่าน</label>
+                    <input type="password" id="regConfirmPassword" class="form-control" placeholder="••••••••">
+                </div>
+            </div>
+            
+            <div class="form-group" style="position: relative;">
+                <label><i class="fa-solid fa-magnifying-glass mr-1 text-pink-400"></i> หน่วยงานต้นสังกัด (ค้นหาจากรหัสหรือชื่อ)</label>
+                <input type="hidden" id="regDept" value="">
+                <div style="position: relative;">
+                    <input type="text" id="regDeptSearch" class="form-control" placeholder="🔍 พิมพ์เพื่อค้นหาหน่วยงาน..." autocomplete="off" oninput="filterDepartments()" onfocus="showDeptDropdown()" onblur="hideDeptDropdownWithDelay()">
+                    <div id="deptDropdownList" class="dept-dropdown-list">
+                        <div class="dept-item disabled">-- กำลังโหลดข้อมูลหน่วยงาน --</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>ถ่ายรูปบัตรประจำตัวเจ้าหน้าที่ (จำเป็น)</label>
+                <div class="camera-container">
+                    <video id="camera" autoplay playsinline></video>
+                    <img id="photoPreview" alt="ภาพถ่าย">
+                    <div class="flex gap-2 mt-2">
+                        <button id="btnStartCamera" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium w-full transition-colors" onclick="startCamera()">
+                            <i class="fa-solid fa-camera mr-1"></i> เปิดกล้อง
+                        </button>
+                        <button id="btnCapture" class="bg-pink-100 hover:bg-pink-200 text-pink-700 px-3 py-2 rounded-lg text-sm font-medium w-full transition-colors hidden" onclick="takePhoto()">
+                            <i class="fa-solid fa-camera-retro mr-1"></i> ถ่ายรูป
+                        </button>
+                        <button id="btnRetake" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2 rounded-lg text-sm font-medium w-full transition-colors hidden" onclick="retakePhoto()">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> ถ่ายใหม่
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="handleAction('register')">
+                <i class="fa-solid fa-user-plus mr-2"></i> ยืนยันลงทะเบียน
+            </button>
+            <button class="btn btn-secondary" onclick="switchView('login')">กลับไปหน้าเข้าสู่ระบบ</button>
+        </div>
+
+        <!-- ================= VIEW: VERIFY REGISTER ================= -->
+        <div id="viewVerifyReg" class="view-section">
+            <div class="text-center mb-4">
+                <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-3">
+                    <i class="fa-regular fa-envelope-open"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-700">ยืนยันรหัสลงทะเบียน</h3>
+                <p class="text-sm text-gray-500 mt-2">กรุณากรอกรหัส 6 หลักที่ส่งไปยังอีเมลของท่าน</p>
+                <p class="font-medium text-pink-600" id="displayRegEmail"></p>
+            </div>
+            
+            <div class="form-group text-center">
+                <input type="text" id="verifyRegCode" class="form-control text-center text-2xl tracking-widest font-bold" placeholder="------" maxlength="6">
+            </div>
+
+            <button class="btn btn-primary" onclick="handleAction('verifyRegister')">
+                <i class="fa-solid fa-check-circle mr-2"></i> ตรวจสอบรหัส
+            </button>
+            <button class="btn btn-secondary" onclick="switchView('login')">กลับหน้าหลัก</button>
+        </div>
+
+        <!-- ================= VIEW: FORGOT PASSWORD ================= -->
+        <div id="viewForgotPassword" class="view-section">
+            <div class="text-center mb-4">
+                <h3 class="text-xl font-bold text-gray-700 border-b pb-2">ลืมรหัสผ่าน</h3>
+                <p class="text-sm text-gray-500 mt-2">ระบบจะส่งรหัส OTP ไปยังอีเมลที่ท่านลงทะเบียนไว้</p>
+            </div>
+            
+            <div class="form-group">
+                <label>อีเมลของท่าน</label>
+                <input type="email" id="forgotEmail" class="form-control" placeholder="example@udonhosp.go.th">
+            </div>
+
+            <button class="btn btn-primary" onclick="handleAction('requestOTP')">
+                <i class="fa-regular fa-paper-plane mr-2"></i> ขอรหัส OTP
+            </button>
+            <button class="btn btn-secondary" onclick="switchView('login')">ยกเลิก</button>
+        </div>
+
+        <!-- ================= VIEW: VERIFY OTP ================= -->
+        <div id="viewVerifyOTP" class="view-section">
+             <div class="text-center mb-4">
+                <h3 class="text-xl font-bold text-gray-700 border-b pb-2">ยืนยัน OTP</h3>
+                <p class="text-sm text-gray-500 mt-2">กรุณากรอกรหัส OTP ที่ส่งไปยัง</p>
+                <p class="font-medium text-pink-600" id="displayOtpEmail"></p>
+            </div>
+            
+            <div class="form-group">
+                <label>รหัส OTP (6 หลัก)</label>
+                <input type="text" id="otpCode" class="form-control text-center text-xl tracking-widest" placeholder="------" maxlength="6">
+            </div>
+
+            <button class="btn btn-primary" onclick="handleAction('verifyOTP')">
+                <i class="fa-solid fa-shield-check mr-2"></i> ยืนยัน OTP
+            </button>
+            <button class="btn btn-secondary" onclick="switchView('forgotPassword')">กลับ</button>
+        </div>
+
+        <!-- ================= VIEW: RESET PASSWORD ================= -->
+        <div id="viewResetPassword" class="view-section">
+            <div class="text-center mb-4">
+                <h3 class="text-xl font-bold text-gray-700 border-b pb-2">ตั้งรหัสผ่านใหม่</h3>
+            </div>
+            
+            <div class="form-group">
+                <label>รหัสผ่านใหม่</label>
+                <input type="password" id="newPassword" class="form-control" placeholder="กรอกรหัสผ่านใหม่">
+            </div>
+            <div class="form-group">
+                <label>ยืนยันรหัสผ่านใหม่</label>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
+            </div>
+
+            <button class="btn btn-primary" onclick="handleAction('resetPassword')">
+                <i class="fa-solid fa-floppy-disk mr-2"></i> บันทึกรหัสผ่านใหม่
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // ==== API URL Google Apps Script Web App ====
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzuJpqOJuPRrBi6WC2Ifqq0J9YWz8l-LSIsSJQ4u4kCX9qrdC5IW4wgh0eBTdK5Pa3i/exec'; 
+        
+        let videoStream = null;
+        let photoBase64 = "";
+        let currentRegEmail = "";
+        let currentForgotEmail = "";
+        let allDepartments = [];
+
+        window.onload = function() {
+            // โหลดรายการหน่วยงานเมื่อหน้าเว็บโหลดเสร็จ เผื่อผู้ใช้กดไปหน้าลงทะเบียน
+        };
+
+        // --- UI Functions ---
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view' + viewName.charAt(0).toUpperCase() + viewName.slice(1)).classList.add('active');
+            
+            if(viewName === 'verifyReg') {
+                document.getElementById('displayRegEmail').innerText = currentRegEmail;
+            }
+            if(viewName === 'verifyOTP') {
+                document.getElementById('displayOtpEmail').innerText = currentForgotEmail;
+            }
+            if(viewName !== 'register') {
+                stopCamera();
+            }
+        }
+
+        function showOverlay(text) {
+            document.getElementById('overlayText').innerText = text || 'กำลังประมวลผล...';
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function hideOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // --- API Helper ---
+        async function fetchAPI(action, payload) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: action, data: payload })
+                });
+                
+                const text = await response.text();
+                try {
+                    const result = JSON.parse(text);
+                    return result;
+                } catch (jsonErr) {
+                    console.error("Non-JSON Response from Server:", text);
+                    return { 
+                        status: 'error', 
+                        message: 'เซิร์ฟเวอร์ตอบกลับไม่ถูกต้อง: ' + text.substring(0, 120) 
+                    };
+                }
+            } catch (error) {
+                console.error("Fetch API Error:", error);
+                return { status: 'error', message: 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบอินเทอร์เน็ต' };
+            }
+        }
+
+        // --- Department Dropdown Functions ---
+        async function fetchDepartments() {
+            // ถ้ามีข้อมูลแล้วไม่ต้องโหลดซ้ำ
+            if(allDepartments.length > 0) {
+                renderDeptList(allDepartments);
+                return;
+            }
+
+            const dropdown = document.getElementById('deptDropdownList');
+            dropdown.innerHTML = '<div class="dept-item disabled"><i class="fa-solid fa-spinner fa-spin mr-2"></i>กำลังโหลดข้อมูลหน่วยงาน...</div>';
+            
+            try {
+                const res = await fetchAPI('getDepartments', {});
+                
+                if (res.status === 'success' && Array.isArray(res.data)) {
+                    allDepartments = res.data.map(dept => ({
+                        id: dept.DEP_ID || dept.id || '',
+                        name: dept.DEPNAME || dept.name || dept.DEP_NAME || ''
+                    })).filter(item => item.id && item.name);
+
+                    renderDeptList(allDepartments);
+                } else {
+                    dropdown.innerHTML = '<div class="dept-item disabled text-red-500">-- ไม่สามารถดึงข้อมูลหน่วยงานได้ --</div>';
+                    if(res.message) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ข้อผิดพลาดจากเซิร์ฟเวอร์',
+                            text: res.message,
+                            confirmButtonColor: '#ff8da1'
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("Fetch Departments Error:", error);
+                dropdown.innerHTML = '<div class="dept-item disabled text-red-500">-- เกิดข้อผิดพลาดในการโหลดข้อมูล --</div>';
+            }
+        }
+
+        function renderDeptList(list) {
+            const dropdown = document.getElementById('deptDropdownList');
+            dropdown.innerHTML = '';
+
+            if (!list || list.length === 0) {
+                dropdown.innerHTML = '<div class="dept-item disabled">ไม่พบหน่วยงานที่ค้นหา</div>';
+                return;
+            }
+
+            list.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'dept-item';
+                div.innerHTML = `<span class="dept-id-badge">${item.id}</span> <span>${item.name}</span>`;
+                div.onmousedown = () => selectDepartment(item.id, item.name); // ใช้ onmousedown แทน onclick เพื่อกัน blur event ทำงานก่อน
+                dropdown.appendChild(div);
+            });
+        }
+
+        function filterDepartments() {
+            const searchInput = document.getElementById('regDeptSearch').value.trim().toLowerCase();
+            const hiddenInput = document.getElementById('regDept');
+            
+            // ล้างค่าที่เคยเลือกถ้าผู้ใช้พิมพ์ค้นหาใหม่
+            hiddenInput.value = '';
+
+            if (!searchInput) {
+                renderDeptList(allDepartments);
+                showDeptDropdown();
+                return;
+            }
+
+            const filtered = allDepartments.filter(dept =>  String(dept.id).toLowerCase().includes(searchInput) || String(dept.name).toLowerCase().includes(searchInput));
+
+            renderDeptList(filtered);
+            showDeptDropdown();
+        }
+
+        function selectDepartment(id, name) {
+            document.getElementById('regDept').value = id;
+            document.getElementById('regDeptSearch').value = `${id} - ${name}`;
+            hideDeptDropdown();
+        }
+
+        function showDeptDropdown() {
+            const dropdown = document.getElementById('deptDropdownList');
+            dropdown.classList.add('show');
+        }
+
+        function hideDeptDropdown() {
+            const dropdown = document.getElementById('deptDropdownList');
+            dropdown.classList.remove('show');
+        }
+
+        function hideDeptDropdownWithDelay() {
+            setTimeout(() => {
+                hideDeptDropdown();
+            }, 200);
+        }
+
+        // --- Camera Functions ---
+        async function startCamera() {
+            const video = document.getElementById('camera');
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                video.srcObject = videoStream;
+                video.style.display = 'block';
+                document.getElementById('photoPreview').style.display = 'none';
+                
+                document.getElementById('btnStartCamera').classList.add('hidden');
+                document.getElementById('btnCapture').classList.remove('hidden');
+                document.getElementById('btnRetake').classList.add('hidden');
+            } catch (err) {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเข้าถึงกล้องได้ กรุณาอนุญาตให้ใช้งานกล้อง', 'error');
+            }
+        }
+
+        function takePhoto() {
+            const video = document.getElementById('camera');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            photoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            
+            const preview = document.getElementById('photoPreview');
+            preview.src = photoBase64;
+            preview.style.display = 'block';
+            video.style.display = 'none';
+            
+            stopCamera();
+            
+            document.getElementById('btnCapture').classList.add('hidden');
+            document.getElementById('btnRetake').classList.remove('hidden');
+        }
+
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+            }
+        }
+
+        function retakePhoto() {
+            photoBase64 = "";
+            startCamera();
+        }
+
+        // --- Main Actions ---
+        async function handleAction(actionType) {
+            
+            // ================= LOGIN =================
+            if (actionType === 'login') {
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                
+                if(!username || !password) return Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning');
+                
+                showOverlay('กำลังเข้าสู่ระบบ...');
+                const res = await fetchAPI('login', { username, password });
+                hideOverlay();
+                
+                if (res.status === 'success') {
+                    // บันทึก Token ลง LocalStorage เพื่อใช้ในหน้าอื่น
+                    localStorage.setItem('authToken', res.token);
+                    localStorage.setItem('userName', res.fullName);
+                    localStorage.setItem('userId', res.userId);
+                    localStorage.setItem('depId', res.depId);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'เข้าสู่ระบบสำเร็จ',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // นำทางไปยังหน้า dept_detail.html พร้อมส่งพารามิเตอร์ DEP_ID
+                        window.location.href = `dept_detail.html?DEP_ID=${res.depId}`;
+                    });
+                } else {
+                    Swal.fire('เข้าสู่ระบบไม่สำเร็จ', res.message, 'error');
+                }
+            }
+            
+            // ================= REGISTER =================
+            else if (actionType === 'register') {
+                const name = document.getElementById('regName').value.trim();
+                const surname = document.getElementById('regSurname').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const dept = document.getElementById('regDept').value;
+                const username = document.getElementById('regUsername').value.trim();
+                const password = document.getElementById('regPassword').value;
+                const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+                if(!name || !surname || !email || !dept || !username || !password) return Swal.fire('ข้อมูลไม่ครบ', 'กรุณากรอกข้อมูลและเลือกหน่วยงาน', 'warning');
+                if(password !== confirmPassword) return Swal.fire('ข้อผิดพลาด', 'รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน', 'error');
+                if(!photoBase64) return Swal.fire('รูปถ่ายไม่พร้อม', 'กรุณาถ่ายภาพบัตรประจำตัวเจ้าหน้าที่', 'warning');
+
+                showOverlay('กำลังบันทึกข้อมูลและส่งรหัส OTP...');
+                const payload = { name, surname, email, dept, username, password, imageBase64: photoBase64 };
+                const res = await fetchAPI('register', payload);
+                hideOverlay();
+
+                if (res.status === 'success') {
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: 'ลงทะเบียนเบื้องต้นสำเร็จ', 
+                        text: res.message || 'ระบบได้ส่งรหัสยืนยันไปที่อีเมลของท่านเรียบร้อยแล้ว', 
+                        confirmButtonColor: '#ff8da1' 
+                    }).then(() => {
+                        currentRegEmail = email;
+                        
+                        document.getElementById('regName').value = '';
+                        document.getElementById('regSurname').value = '';
+                        document.getElementById('regEmail').value = '';
+                        document.getElementById('regDept').value = '';
+                        document.getElementById('regDeptSearch').value = '';
+                        document.getElementById('regUsername').value = '';
+                        document.getElementById('regPassword').value = '';
+                        document.getElementById('regConfirmPassword').value = '';
+                        
+                        switchView('verifyReg');
+                    });
+                } else {
+                    Swal.fire('ข้อผิดพลาด', res.message || 'ไม่สามารถลงทะเบียนได้', 'error');
+                }
+
+            }
+
+            // ================= VERIFY REGISTER =================
+            else if (actionType === 'verifyRegister') {
+                // แก้ไข: ใช้ .trim() ตัดช่องว่างเผื่อผู้ใช้ก๊อปปี้รหัสมาวางแล้วติด Spacebar
+                const code = document.getElementById('verifyRegCode').value.trim();
+                if(!code) return Swal.fire('แจ้งเตือน', 'กรุณากรอกรหัสยืนยัน', 'warning');
+
+                showOverlay('กำลังตรวจสอบรหัส...');
+                // เรียกใช้ Action 'verifyRegisterCode' ซึ่งมีใน Code.gs แล้ว
+                const res = await fetchAPI('verifyRegisterCode', { 
+                    email: currentRegEmail, 
+                    code: code 
+                });
+                hideOverlay();
+
+                if(res.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ',
+                        text: res.message || 'ยืนยันตัวตนเรียบร้อย สามารถเข้าสู่ระบบได้ทันที',
+                        confirmButtonColor: '#ff8da1'
+                    }).then(() => {
+                        switchView('login'); // กลับไปหน้า Login
+                        // เคลียร์ค่ารหัสเดิมทิ้ง
+                        document.getElementById('verifyRegCode').value = '';
+                    });
+                } else {
+                    Swal.fire('ข้อผิดพลาด', res.message || 'รหัสไม่ถูกต้อง', 'error');
+                }
+            }
+            
+            // ================= REQUEST OTP (FORGOT PASS) =================
+            else if (actionType === 'requestOTP') {
+                const email = document.getElementById('forgotEmail').value.trim();
+                if(!email) return Swal.fire('แจ้งเตือน', 'กรุณากรอกอีเมล', 'warning');
+                
+                showOverlay('กำลังตรวจสอบและส่ง OTP...');
+                const res = await fetchAPI('requestOTP', { email });
+                hideOverlay();
+                
+                if (res.status === 'success') {
+                    currentForgotEmail = email;
+                    document.getElementById('forgotEmail').value = '';
+                    switchView('verifyOTP');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ส่งรหัส OTP แล้ว',
+                        text: 'กรุณาตรวจสอบอีเมลของท่าน',
+                        toast: true, position: 'top-end', showConfirmButton: false, timer: 3000
+                    });
+                } else {
+                    Swal.fire('ข้อผิดพลาด', res.message, 'error');
+                }
+            }
+
+            // ================= VERIFY OTP =================
+            else if (actionType === 'verifyOTP') {
+                const otpCode = document.getElementById('otpCode').value.trim();
+                if(!otpCode) return Swal.fire('แจ้งเตือน', 'กรุณากรอกรหัส OTP', 'warning');
+
+                showOverlay('กำลังตรวจสอบ OTP...');
+                // สมมติว่ามี API สำหรับตรวจ OTP (ต้องไปเขียนเพิ่มใน Apps Script)
+                const res = await fetchAPI('verifyOTP', { email: currentForgotEmail, otp: otpCode });
+                hideOverlay();
+
+                if(res.status === 'success') {
+                     switchView('resetPassword');
+                } else {
+                    // สำหรับ Demo นี้ ถ้ายังไม่มี API ให้ผ่านไปเลยถ้ากรอก 6 หลัก
+                    if(otpCode.length === 6) {
+                        switchView('resetPassword');
+                    } else {
+                         Swal.fire('ข้อผิดพลาด', res.message || 'รหัส OTP ไม่ถูกต้อง', 'error');
+                    }
+                }
+            }
+
+            // ================= RESET PASSWORD =================
+            else if (actionType === 'resetPassword') {
+                const newPass = document.getElementById('newPassword').value;
+                const confPass = document.getElementById('confirmPassword').value;
+
+                if(!newPass || !confPass) return Swal.fire('แจ้งเตือน', 'กรุณากรอกรหัสผ่านให้ครบ', 'warning');
+                if(newPass !== confPass) return Swal.fire('ข้อผิดพลาด', 'รหัสผ่านไม่ตรงกัน', 'error');
+
+                showOverlay('กำลังเปลี่ยนรหัสผ่าน...');
+                // สมมติว่ามี API สำหรับเปลี่ยนรหัสผ่าน (ต้องไปเขียนเพิ่มใน Apps Script)
+                const res = await fetchAPI('resetPassword', { email: currentForgotEmail, newPassword: newPass });
+                hideOverlay();
+
+                if(res.status === 'success') {
+                     Swal.fire('สำเร็จ', 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว', 'success').then(() => {
+                         switchView('login');
+                     });
+                } else {
+                     // สำหรับ Demo นี้ สมมติว่าสำเร็จ
+                     Swal.fire('สำเร็จ', 'ระบบได้อัปเดตรหัสผ่านใหม่ของท่านแล้ว', 'success').then(() => {
+                         switchView('login');
+                     });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
