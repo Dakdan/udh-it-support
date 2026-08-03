@@ -1,1 +1,490 @@
 
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายละเอียดหน่วยงาน - IT UDON HOSP</title>
+    
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'udh-pink': {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#ff1493', // Deep Pink
+                            700: '#be185d',
+                            header1: '#ff007f', // Hot Pink gradient start
+                            header2: '#ff66b2', // Soft Pink gradient end
+                        }
+                    },
+                    fontFamily: { kanit: ['Kanit', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #fdf5f7; /* Very soft pink/white background */
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+            z-index: 0;
+            overflow-x: hidden;
+        }
+
+        /* Watermark Background */
+        body::before {
+            content: "IT UDON HOSP";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: clamp(5rem, 12vw, 15rem);
+            font-weight: 800;
+            color: rgba(255, 105, 180, 0.03); /* Very faint pink */
+            z-index: -1;
+            pointer-events: none;
+            white-space: nowrap;
+            user-select: none;
+            letter-spacing: 0.05em;
+        }
+
+        /* Glassmorphism / Clean White Cards */
+        .clean-card {
+            background: #ffffff;
+            border-radius: 1.25rem; /* rounded-xl */
+            border: 1px solid rgba(255, 20, 147, 0.08);
+            box-shadow: 0 10px 30px -5px rgba(255, 105, 180, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Header Gradient (Based on reference) */
+        .header-gradient {
+            background: linear-gradient(90deg, var(--tw-colors-udh-pink-header1) 0%, var(--tw-colors-udh-pink-header2) 100%);
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);
+        }
+
+        /* Section Divider Line */
+        .section-divider {
+            border-bottom: 2px solid #ff66b2;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Loading Overlay Modal */
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .spinner-pulse {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff007f, #ff66b2);
+            border-radius: 100%;
+            animation: sk-scaleout 1.0s infinite ease-in-out;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+        }
+        
+        @keyframes sk-scaleout {
+            0% { transform: scale(0); }
+            100% {
+                transform: scale(1.0);
+                opacity: 0;
+            }
+        }
+
+        /* Custom Scrollbar for table */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #fdf2f8; border-radius: 4px;}
+        ::-webkit-scrollbar-thumb { background: #ff66b2; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff007f; }
+
+        /* Print Specific Styling */
+        @media print {
+            @page { size: A4 landscape; margin: 10mm; }
+            body { background: white !important; color: black !important; }
+            body::before { display: none !important; } /* Hide watermark */
+            .no-print { display: none !important; }
+            .clean-card { box-shadow: none !important; border: 1px solid #ccc !important; }
+            main { padding: 0 !important; max-width: 100% !important; margin-top: 0 !important; }
+            table { width: 100% !important; border-collapse: collapse; }
+            th { background-color: #f3f4f6 !important; color: black !important; -webkit-print-color-adjust: exact; }
+            td, th { border: 1px solid #e5e7eb !important; padding: 6px !important; font-size: 12px; }
+            .badge-print { border: 1px solid #000; color: #000 !important; background: transparent !important; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="loadingOverlay" class="flex">
+        <div class="spinner-pulse"></div>
+        <h3 id="overlayText" class="mt-6 text-xl font-medium text-udh-pink-600 tracking-wide drop-shadow-sm">กำลังโหลดข้อมูล...</h3>
+    </div>
+
+    <header class="header-gradient text-white sticky top-0 z-40 no-print">
+        <div class="w-full px-4 md:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Left: Logo & Title -->
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <!-- Circular Logo Placeholder -->
+                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center p-1 shadow-md flex-shrink-0">
+                    <div class="w-full h-full border-2 border-udh-pink-600 rounded-full flex items-center justify-center text-udh-pink-600 bg-pink-50">
+                        <i class="fa-solid fa-house-medical text-2xl drop-shadow-sm"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg md:text-2xl tracking-wide uppercase leading-tight text-white drop-shadow-md">IT TECHNICIAN SUPPORT SYSTEMS</h1>
+                    <p class="text-xs md:text-sm text-pink-100 font-light leading-tight drop-shadow-sm">กลุ่มงานเทคโนโลยีสารสนเทศทางการแพทย์<br>UDONTHANI HOSPITAL</p>
+                </div>
+            </div>
+            
+            <!-- Right: User & Actions -->
+            <div class="flex items-center gap-4 self-end md:self-auto">
+                <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/20 shadow-inner">
+                    <i class="fa-solid fa-circle-user text-xl text-white"></i>
+                    <span id="displayUserName" class="text-sm font-medium tracking-wide">กำลังตรวจสอบ...</span>
+                </div>
+                <button onclick="handleLogout()" class="flex items-center gap-2 border border-white bg-transparent hover:bg-white/20 px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm" title="ออกจากระบบ">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span class="hidden sm:inline">ออกจากระบบ</span>
+                </button>
+            </div>
+            
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-7xl px-4 py-8">
+        
+        <!-- Section Header -->
+        <div class="flex items-center gap-3 section-divider no-print">
+            <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-udh-pink-600 shadow-sm">
+                <i class="fa-solid fa-building-flag text-xl"></i>
+            </div>
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800">รายละเอียดหน่วยงาน</h2>
+        </div>
+
+        <div class="clean-card p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <!-- Decorative circle -->
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-pink-50 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
+
+            <div class="flex items-center gap-6 w-full md:w-auto z-10">
+                <!-- Dept Image with circular pink border effect -->
+                <div class="relative w-28 h-28 flex-shrink-0">
+                    <div class="absolute inset-0 border-4 border-pink-200 rounded-full shadow-lg"></div>
+                    <img id="deptImage" src="https://placehold.co/150x150/fdf2f8/ff007f?text=Dept" alt="Department Image" class="w-full h-full object-cover rounded-full border-2 border-white" onerror="this.src='https://placehold.co/150x150/fce7f3/ff007f?text=No+Image'">
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="px-3 py-1 rounded-full bg-pink-100 text-udh-pink-600 border border-pink-200 text-xs font-bold shadow-sm">
+                            รหัส: <span id="displayDepId">กำลังโหลด...</span>
+                        </span>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-gray-800 tracking-wide mt-1" id="displayDepName">ชื่อหน่วยงาน</h3>
+                    <div class="mt-3 flex flex-wrap gap-4 text-sm text-gray-600">
+                        <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
+                            <div class="w-7 h-7 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-user-tie text-xs"></i></div>
+                            <span id="deptManager" class="font-medium">หัวหน้าหน่วยงาน</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
+                            <div class="w-7 h-7 rounded-full bg-green-50 text-green-500 flex items-center justify-center"><i class="fa-solid fa-phone text-xs"></i></div>
+                            <span id="deptPhone" class="font-medium">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto no-print z-10">
+                 <button onclick="window.print()" class="flex-1 md:flex-none bg-white text-gray-700 px-6 py-2.5 rounded-full font-medium border border-gray-200 hover:bg-gray-50 hover:text-udh-pink-600 hover:border-pink-300 transition-all flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-print"></i> พิมพ์รายงาน
+                </button>
+                <button onclick="fetchData()" class="flex-1 md:flex-none bg-gradient-to-r from-udh-pink-600 to-udh-pink-400 hover:from-pink-500 hover:to-pink-400 text-white px-6 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 shadow-md shadow-pink-200 transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between section-divider mt-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm">
+                    <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                </div>
+                <h2 class="text-lg md:text-xl font-bold text-gray-800">รายการครุภัณฑ์ (Dashboard & ครุภัณฑ์)</h2>
+            </div>
+            <span id="totalAssets" class="bg-pink-100 text-udh-pink-600 px-5 py-1.5 rounded-full text-sm font-bold border border-pink-200 shadow-sm">0 รายการ</span>
+        </div>
+
+        <div class="clean-card overflow-hidden">
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-sm text-left whitespace-nowrap md:whitespace-normal">
+                    <thead>
+                        <tr class="bg-pink-50/50 text-gray-700 font-bold border-b border-pink-100">
+                            <th class="px-5 py-4 w-12 text-center text-udh-pink-600">#</th>
+                            <th class="px-5 py-4 w-20 text-center">รูปภาพ</th>
+                            <th class="px-5 py-4">ข้อมูลครุภัณฑ์</th>
+                            <th class="px-5 py-4">รายละเอียด / สเปค</th>
+                            <th class="px-5 py-4 text-center">หมวดหมู่</th>
+                            <th class="px-5 py-4 text-center">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assetTableBody" class="divide-y divide-pink-50 bg-white">
+                        <!-- Loading State -->
+                        <tr>
+                            <td colspan="6" class="text-center py-20">
+                                <div class="inline-block animate-pulse text-pink-200 text-5xl mb-4"><i class="fa-solid fa-boxes-stacked"></i></div>
+                                <p class="text-gray-500 font-medium text-lg">กำลังโหลดข้อมูลครุภัณฑ์...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </main>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbznFwIHQsiqqydWSyR7eweKVsfchRyWtbQPZ_ogHma4ZL2X9QnHFb6sqVXvEeXJqwTx/exec';
+
+        window.onload = function() {
+            checkAuth();
+            fetchData();
+        };
+
+        // --- Helper: Safe Redirect (Prevents Blob/Preview Error) ---
+        function safeRedirect(url) {
+            // ถ้าอยู่ในโหมด Preview ของแพลตฟอร์ม จะป้องกันการ Redirect เพื่อไม่ให้ Error
+            if (window.location.protocol === 'blob:' || window.location.hostname === '') {
+                console.warn("ระบบ Preview: ข้ามการเปลี่ยนหน้าไปยัง " + url);
+                return false;
+            }
+            try {
+                window.location.href = url;
+                return true;
+            } catch (e) {
+                console.error("Redirect Error:", e);
+                return false;
+            }
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            
+            // จำลองข้อมูลสำหรับโหมด Preview ถ้าไม่มี Token
+            if (!token && (window.location.protocol === 'blob:' || window.location.hostname === '')) {
+                document.getElementById('displayUserName').innerText = 'ผู้ใช้งาน (โหมดจำลอง)';
+                return;
+            }
+
+            if (!token) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'กรุณาเข้าสู่ระบบ',
+                    text: 'คุณยังไม่ได้เข้าสู่ระบบ',
+                    confirmButtonColor: '#ff007f'
+                }).then(() => {
+                    safeRedirect('index.html');
+                });
+                return;
+            }
+            
+            const userName = localStorage.getItem('userName') || 'เจ้าหน้าที่ IT';
+            document.getElementById('displayUserName').innerText = userName;
+        }
+
+        function showOverlay(text = 'กำลังโหลดข้อมูล...') {
+            document.getElementById('overlayText').innerText = text;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideOverlay() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function cleanString(str) {
+            return String(str || "").trim().toLowerCase();
+        }
+
+        async function fetchData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let rawDepId = urlParams.get('DEP_ID') || localStorage.getItem('depId');
+            
+            // กรณีไม่มีรหัสแผนก ให้ใช้ค่าจำลองในโหมด Preview
+            if (!rawDepId) {
+                if (window.location.protocol === 'blob:' || window.location.hostname === '') {
+                    rawDepId = "IT-001"; // Mock ID for preview
+                } else {
+                    Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: 'ไม่พบรหัสแผนก', confirmButtonColor: '#ff007f' });
+                    setTimeout(() => safeRedirect('index.html'), 2000);
+                    return;
+                }
+            }
+
+            const targetDepId = rawDepId.trim();
+            document.getElementById('displayDepId').innerText = targetDepId;
+            showOverlay('กำลังดึงข้อมูล...');
+
+            try {
+                const url = `${API_URL}?action=getFullData&DEP_ID=${encodeURIComponent(targetDepId)}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                hideOverlay();
+
+                if (result.department && Object.keys(result.department).length > 0) {
+                    renderDepartment(result.department, targetDepId);
+                } else {
+                    // Fallback ถ้าหาไม่เจอ
+                    document.getElementById('displayDepName').innerText = "หน่วยงาน " + targetDepId;
+                    document.getElementById('deptManager').innerText = "ไม่พบข้อมูล";
+                }
+                
+                if (result.auditLogs && Array.isArray(result.auditLogs)) {
+                    renderAssets(result.auditLogs);
+                } else {
+                    renderAssets([]);
+                }
+
+            } catch (error) {
+                hideOverlay();
+                console.error("Fetch Error:", error);
+                
+                // สำหรับโหมด Preview ถ้าเชื่อมต่อ API ไม่ได้ ให้แสดงข้อมูลจำลอง
+                if (window.location.protocol === 'blob:' || window.location.hostname === '') {
+                     document.getElementById('displayDepName').innerText = "ศูนย์เทคโนโลยีสารสนเทศ (Demo)";
+                     renderAssets([
+                         { Asset_ID: 'COM-001-001', Asset_Type: 'เครื่องคอมพิวเตอร์', Detail_ID: 'Dell Optiplex 7090', 'อายุ': '2 ปี', Priority: 'งานธุรการ', RegStatus: 'มีทะเบียน' }
+                     ]);
+                     return;
+                }
+
+                Swal.fire('ข้อผิดพลาดการเชื่อมต่อ', 'ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้', 'error');
+                document.getElementById('assetTableBody').innerHTML = `<tr><td colspan="6" class="text-center py-10 text-red-400 font-medium">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+            }
+        }
+
+        // --- STREAMING_CHUNK:Render UI Functions ---
+        function renderDepartment(dept, fallbackId) {
+            const deptName = dept['DEPNAME'] || dept['ชื่อหน่วยงาน'] || dept['Department'] || `หน่วยงาน ${fallbackId}`;
+            const manager = dept['HEADNAME'] || dept['หัวหน้าหน่วยงาน'] || dept['Manager'] || '-';
+            const phone = dept['TEL'] || dept['เบอร์โทร'] || dept['Phone'] || '-';
+            const photoUrl = dept.photoUrl || `https://placehold.co/150x150/fdf2f8/ff007f?text=${encodeURIComponent(deptName.substring(0,3))}`;
+
+            document.getElementById('displayDepName').innerText = deptName;
+            document.getElementById('deptManager').innerText = manager;
+            document.getElementById('deptPhone').innerText = phone;
+            document.getElementById('deptImage').src = photoUrl;
+        }
+
+        function renderAssets(logs) {
+            const tbody = document.getElementById('assetTableBody');
+            document.getElementById('totalAssets').innerText = `${logs.length} รายการ`;
+
+            if (logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-16 text-gray-400 font-medium"><i class="fa-solid fa-box-open text-pink-200 text-5xl mb-3 block"></i> ไม่มีข้อมูลครุภัณฑ์ในหน่วยงานนี้</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            logs.forEach((log, index) => {
+                const assetId = log.Asset_ID || log.NOID || '-';
+                const typeName = log.Asset_Type || 'ไม่ระบุประเภท';
+                const detail = log.Detail_ID || '-';
+                const age = log['อายุ'] || log.DB_Age || '-';
+                const priority = log.Priority || '-';
+                const regStatus = log.RegStatus || 'มีทะเบียน'; // Default
+                
+                let photoUrl = log.Asset_Photo || '';
+                if (!photoUrl && log.Images && log.Images.length > 0) {
+                    photoUrl = `https://drive.google.com/thumbnail?id=${log.Images[0]}&sz=w200`;
+                }
+                const imgElement = photoUrl 
+                    ? `<img src="${photoUrl}" class="w-14 h-14 object-cover rounded-lg border border-pink-100 shadow-sm mx-auto cursor-pointer hover:opacity-80 transition-opacity" onclick="window.open('${photoUrl}', '_blank')" title="คลิกเพื่อดูรูปใหญ่">`
+                    : `<div class="w-14 h-14 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300 mx-auto"><i class="fa-regular fa-image text-xl"></i></div>`;
+
+                let statusBadge = '';
+                if (regStatus.includes('มี') || regStatus === 'Active') {
+                    statusBadge = `<span class="badge-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold border border-emerald-200 shadow-sm"><i class="fa-solid fa-circle-check"></i> ${regStatus}</span>`;
+                } else {
+                    statusBadge = `<span class="badge-print inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 text-rose-500 text-xs font-bold border border-rose-200 shadow-sm"><i class="fa-solid fa-circle-xmark"></i> ${regStatus}</span>`;
+                }
+
+                html += `
+                    <tr class="hover:bg-pink-50/40 transition-colors">
+                        <td class="px-5 py-4 text-center text-gray-400 font-medium">${index + 1}</td>
+                        <td class="px-5 py-4">${imgElement}</td>
+                        <td class="px-5 py-4">
+                            <p class="font-bold text-gray-800 text-base">${assetId}</p>
+                            <p class="text-xs text-udh-pink-600 mt-1.5 flex items-center gap-1 font-medium"><i class="fa-solid fa-tag text-[10px]"></i> ${typeName}</p>
+                        </td>
+                        <td class="px-5 py-4">
+                            <p class="text-sm text-gray-700 whitespace-normal line-clamp-2 md:line-clamp-none font-medium">${detail}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-xs text-pink-600 bg-pink-100 px-2.5 py-1 rounded-md font-medium border border-pink-200"><i class="fa-regular fa-calendar mr-1"></i> อายุ: ${age}</span>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 text-center">
+                            <span class="text-xs bg-indigo-50 text-indigo-600 border border-indigo-100 px-3 py-1.5 rounded-full font-bold shadow-sm">${priority}</span>
+                        </td>
+                        <td class="px-5 py-4 text-center">
+                            ${statusBadge}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // --- Action: Logout ---
+        function handleLogout() {
+            Swal.fire({
+                title: 'ออกจากระบบ',
+                text: "คุณต้องการออกจากระบบ IT SUPPORT ใช่หรือไม่?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ff007f',
+                cancelButtonColor: '#9ca3af',
+                confirmButtonText: 'ออกจากระบบ',
+                cancelButtonText: 'ยกเลิก',
+                shape: 'rounded-xl'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showOverlay('กำลังออกจากระบบ...');
+                    setTimeout(() => {
+                        localStorage.clear();
+                        safeRedirect('index.html');
+                        // ถ้าอยู่ในโหมด Preview ให้ซ่อน Overlay
+                        hideOverlay();
+                    }, 800);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
