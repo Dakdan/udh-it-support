@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายละเอียดหน่วยงาน - IT UDON HOSP</title>
+    <title>รายละเอียดหน่วยงาน - IT UDON HOSP ✨</title>
     
-    <!-- Google Fonts: Kanit -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Kanit & Itim -->
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert2 -->
@@ -20,19 +20,23 @@
                 extend: {
                     colors: {
                         'udh-pink': {
-                            50: '#fdf2f8',
-                            100: '#fce7f3',
-                            200: '#fbcfe8',
-                            300: '#f9a8d4',
-                            400: '#f472b6',
-                            500: '#ec4899',
-                            600: '#ff1493', // Deep Pink
-                            700: '#be185d',
-                            header1: '#ff007f', // Hot Pink gradient start
-                            header2: '#ff66b2', // Soft Pink gradient end
+                            50: '#fff0f6',
+                            100: '#ffe3ec',
+                            200: '#ffc6d9',
+                            300: '#ff9ebb',
+                            400: '#ff6897',
+                            500: '#ff3371',
+                            600: '#ff0055', 
+                            700: '#d90043',
+                            header1: '#ff007f', 
+                            header2: '#ff66b2',
+                            sparkle: '#ffe4e6'
                         }
                     },
-                    fontFamily: { kanit: ['Kanit', 'sans-serif'] }
+                    fontFamily: { 
+                        kanit: ['Kanit', 'sans-serif'],
+                        itim: ['Itim', 'cursive', 'sans-serif']
+                    }
                 }
             }
         }
@@ -41,7 +45,7 @@
     <style>
         body {
             font-family: 'Kanit', sans-serif;
-            background-color: #fdf5f7;
+            background: linear-gradient(135deg, #fff5f8 0%, #fdeef4 50%, #fff0f5 100%);
             min-height: 100vh;
             color: #333;
             position: relative;
@@ -49,51 +53,104 @@
             overflow-x: hidden;
         }
 
-        /* Watermark Background */
+        /* Sparkle Watermark Background */
         body::before {
-            content: "IT UDON HOSP";
+            content: "✨ IT UDON HOSP ✨";
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: clamp(5rem, 12vw, 15rem);
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-size: clamp(4rem, 10vw, 13rem);
             font-weight: 800;
-            color: rgba(255, 105, 180, 0.035);
+            color: rgba(255, 105, 180, 0.04);
             z-index: -1;
             pointer-events: none;
             white-space: nowrap;
             user-select: none;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
+            filter: drop-shadow(0 0 20px rgba(255, 192, 203, 0.3));
         }
 
-        /* Clean White Cards */
-        .clean-card {
-            background: #ffffff;
-            border-radius: 1.25rem;
-            border: 1px solid rgba(255, 20, 147, 0.08);
-            box-shadow: 0 10px 30px -5px rgba(255, 105, 180, 0.12);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        /* Animated Sparkle Stars Particle Canvas Container */
+        #sparkleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        /* Header Gradient */
-        .header-gradient {
-            background: linear-gradient(90deg, #ff007f 0%, #ff66b2 100%);
-            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);
+        /* Glitzy White Glass Cards */
+        .sparkle-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            border: 2px solid rgba(255, 182, 193, 0.35);
+            box-shadow: 0 12px 35px -5px rgba(255, 105, 180, 0.18), 0 0 15px rgba(255, 192, 203, 0.25);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Section Divider Line */
+        .sparkle-card:hover {
+            box-shadow: 0 18px 40px -5px rgba(255, 20, 147, 0.25), 0 0 25px rgba(255, 182, 193, 0.4);
+            border-color: rgba(255, 105, 180, 0.5);
+        }
+
+        /* Animated Moving Header Gradient */
+        .header-gradient-animated {
+            background: linear-gradient(270deg, #ff007f, #ff66b2, #ff1493, #ff8da1);
+            background-size: 300% 300%;
+            animation: gradientMove 8s ease infinite;
+            box-shadow: 0 6px 20px rgba(255, 0, 127, 0.35);
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Shimmer Shiny Button Effect */
+        .btn-shimmer {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-shimmer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                60deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.5) 50%,
+                transparent 70%
+            );
+            transform: rotate(30deg) translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        .btn-shimmer:hover::after {
+            transform: rotate(30deg) translateX(100%);
+        }
+
+        /* Section Divider Line with Glowing Hearts/Stars */
         .section-divider {
-            border-bottom: 2px solid #ff66b2;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.25rem;
+            border-bottom: 2px dashed #ff9ebb;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
 
         /* Loading Overlay Modal */
         #loadingOverlay {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(8px);
+            background: rgba(255, 240, 245, 0.92);
+            backdrop-filter: blur(10px);
             z-index: 9999;
             display: none; 
             flex-direction: column;
@@ -101,140 +158,192 @@
             align-items: center;
         }
         
-        .spinner-pulse {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #ff007f, #ff66b2);
-            border-radius: 100%;
-            animation: sk-scaleout 1.0s infinite ease-in-out;
-            box-shadow: 0 0 25px rgba(255, 0, 127, 0.4);
-        }
-        
-        @keyframes sk-scaleout {
-            0% { transform: scale(0); }
-            100% {
-                transform: scale(1.0);
-                opacity: 0;
-            }
+        .spinner-sparkle {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            animation: spinPulse 1.8s infinite ease-in-out;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #fdf2f8; border-radius: 4px;}
-        ::-webkit-scrollbar-thumb { background: #ff66b2; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff007f; }
+        .spinner-sparkle::before, .spinner-sparkle::after {
+            content: "✨";
+            position: absolute;
+            font-size: 3rem;
+            animation: bounceSparkle 1.2s infinite alternate ease-in-out;
+        }
+        .spinner-sparkle::after {
+            content: "💖";
+            font-size: 2.2rem;
+            top: 20px;
+            left: 20px;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes spinPulse {
+            0% { transform: scale(0.9) rotate(0deg); }
+            50% { transform: scale(1.15) rotate(180deg); }
+            100% { transform: scale(0.9) rotate(360deg); }
+        }
+
+        @keyframes bounceSparkle {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-12px) scale(1.2); }
+        }
+
+        /* Custom Soft Pink Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #ffe3ec; border-radius: 6px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #ff66b2, #ff007f); border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff0055; }
+
+        /* Floating Badge Pulse */
+        .pulse-badge {
+            animation: cutePulse 2s infinite ease-in-out;
+        }
+
+        @keyframes cutePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 105, 180, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 20, 147, 0.5); }
+        }
+
+        /* Icon Hover Bounce */
+        .hover-bounce:hover i {
+            display: inline-block;
+            animation: iconJump 0.4s ease;
+        }
+        @keyframes iconJump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px) scale(1.2); }
+        }
 
         /* Print Specific Styling */
         @media print {
             @page { size: A4 landscape; margin: 10mm; }
             body { background: white !important; color: black !important; }
-            body::before { display: none !important; }
+            body::before, #sparkleCanvas { display: none !important; }
             .no-print { display: none !important; }
-            .clean-card { box-shadow: none !important; border: 1px solid #ccc !important; }
+            .sparkle-card { box-shadow: none !important; border: 1px solid #ccc !important; }
             main { padding: 0 !important; max-width: 100% !important; margin-top: 0 !important; }
             table { width: 100% !important; border-collapse: collapse; }
             th { background-color: #f3f4f6 !important; color: black !important; -webkit-print-color-adjust: exact; }
             td, th { border: 1px solid #e5e7eb !important; padding: 6px !important; font-size: 12px; }
-            .badge-print { border: 1px solid #000; color: #000 !important; background: transparent !important; }
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased relative z-10">
+
+    <!-- Canvas for Floating Magic Sparkles -->
+    <canvas id="sparkleCanvas"></canvas>
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="flex">
-        <div class="spinner-pulse"></div>
-        <h3 id="overlayText" class="mt-6 text-xl font-medium text-udh-pink-600 tracking-wide drop-shadow-sm">กำลังโหลดข้อมูล...</h3>
+        <div class="spinner-sparkle"></div>
+        <h3 id="overlayText" class="mt-6 text-2xl font-bold text-udh-pink-600 tracking-wide drop-shadow-sm font-itim flex items-center gap-2">
+            <span>✨ กำลังโหลดข้อมูลฟรุ้งฟริ้ง... ✨</span>
+        </h3>
     </div>
 
-    <!-- Header -->
-    <header class="header-gradient text-white sticky top-0 z-40 no-print">
+    <!-- Header Banner -->
+    <header class="header-gradient-animated text-white sticky top-0 z-40 no-print rounded-b-2xl shadow-lg">
         <div class="w-full px-4 md:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
             
             <!-- Left: Logo & Title -->
             <div class="flex items-center gap-4 w-full md:w-auto">
-                <div class="w-13 h-13 bg-white rounded-full flex items-center justify-center p-1.5 shadow-md flex-shrink-0">
-                    <div class="w-full h-full border-2 border-udh-pink-600 rounded-full flex items-center justify-center text-udh-pink-600 bg-pink-50">
-                        <i class="fa-solid fa-hospital text-2xl drop-shadow-sm"></i>
+                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center p-1.5 shadow-lg flex-shrink-0 transform hover:rotate-12 transition-transform cursor-pointer">
+                    <div class="w-full h-full border-2 border-dashed border-udh-pink-600 rounded-full flex items-center justify-center text-udh-pink-600 bg-pink-50">
+                        <i class="fa-solid fa-wand-magic-sparkles text-2xl drop-shadow-sm animate-pulse"></i>
                     </div>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg md:text-2xl tracking-wide uppercase leading-tight text-white drop-shadow-md">IT TECHNICIAN SUPPORT SYSTEMS</h1>
-                    <p class="text-xs md:text-sm text-pink-100 font-light leading-tight drop-shadow-sm">กลุ่มงานเทคโนโลยีสารสนเทศทางการแพทย์ โรงพยาบาลอุดรธานี</p>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-extrabold text-lg md:text-2xl tracking-wider uppercase leading-tight text-white drop-shadow-md">
+                            IT TECHNICIAN SUPPORT
+                        </h1>
+                        <span class="text-yellow-200 text-lg animate-bounce">✨</span>
+                    </div>
+                    <p class="text-xs md:text-sm text-pink-100 font-light leading-tight drop-shadow-sm font-itim">
+                        🌸 กลุ่มงานเทคโนโลยีสารสนเทศทางการแพทย์ โรงพยาบาลอุดรธานี
+                    </p>
                 </div>
             </div>
             
             <!-- Right: Controls & User Profile -->
             <div class="flex items-center gap-3 self-end md:self-auto">
-                <div class="flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full border border-white/20 shadow-inner">
-                    <i class="fa-solid fa-circle-user text-xl text-white"></i>
+                <div class="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/30 shadow-inner">
+                    <i class="fa-solid fa-face-smile text-xl text-yellow-200"></i>
                     <span id="displayUserName" class="text-sm font-medium tracking-wide">กำลังตรวจสอบ...</span>
                 </div>
-                <button onclick="handleLogout()" class="flex items-center gap-2 border border-white/80 bg-transparent hover:bg-white/20 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm" title="ออกจากระบบ">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <button onclick="handleLogout()" class="btn-shimmer flex items-center gap-2 border border-white/80 bg-white/10 hover:bg-white/30 px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-md transform hover:scale-105" title="ออกจากระบบ">
+                    <i class="fa-solid fa-right-from-bracket"></i>
                     <span class="hidden sm:inline">ออกจากระบบ</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto max-w-7xl px-4 py-6">
+    <main class="container mx-auto max-w-7xl px-4 py-6 relative z-10">
         
-        <!-- Section Header -->
+        <!-- Section Title Header -->
         <div class="flex flex-wrap items-center justify-between gap-4 section-divider no-print">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-udh-pink-600 shadow-sm">
-                    <i class="fa-solid fa-building-flag text-xl"></i>
+                <div class="w-11 h-11 rounded-full bg-pink-100 border-2 border-pink-300 flex items-center justify-center text-udh-pink-600 shadow-md transform hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-building-circle-check text-xl"></i>
                 </div>
                 <div>
-                    <h2 class="text-xl md:text-2xl font-bold text-gray-800">รายละเอียดหน่วยงาน</h2>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2 font-itim">
+                        <span>🎀 รายละเอียดหน่วยงาน</span>
+                    </h2>
                     <p class="text-xs text-gray-500">ข้อมูลสำรวจและตรวจสอบครุภัณฑ์ประจำแผนก</p>
                 </div>
             </div>
 
-            <!-- Quick Department Selector Dropdown (Admin Only) -->
+            <!-- Department Selector (Admin Only) -->
             <div id="deptSelectWrapper" class="flex items-center gap-2 hidden">
-                <label for="deptSelect" class="text-xs font-bold text-gray-600 hidden md:block">เลือกหน่วยงาน:</label>
+                <label for="deptSelect" class="text-xs font-bold text-udh-pink-600 hidden md:block flex items-center gap-1">
+                    <i class="fa-solid fa-sparkles"></i> เลือกหน่วยงาน:
+                </label>
                 <div class="relative">
-                    <select id="deptSelect" onchange="switchDepartment(this.value)" class="bg-white border border-pink-200 text-gray-800 text-sm rounded-full focus:ring-pink-500 focus:border-pink-500 block p-2 px-4 pr-8 shadow-sm cursor-pointer hover:border-pink-400 transition-colors">
+                    <select id="deptSelect" onchange="switchDepartment(this.value)" class="bg-white border-2 border-pink-300 text-gray-800 text-sm rounded-full focus:ring-pink-500 focus:border-pink-500 block p-2 px-4 pr-8 shadow-md cursor-pointer hover:border-pink-500 transition-colors">
                         <option value="">กำลังโหลดแผนก...</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <!-- Department Detail Banner Card -->
-        <div class="clean-card p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-pink-50 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
+        <!-- Department Detail Card -->
+        <div class="sparkle-card p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <!-- Decorative Light Blobs -->
+            <div class="absolute -right-10 -top-10 w-44 h-44 bg-pink-200 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+            <div class="absolute -left-10 -bottom-10 w-44 h-44 bg-purple-200 rounded-full blur-3xl opacity-40 pointer-events-none"></div>
 
             <div class="flex flex-col sm:flex-row items-center sm:items-start md:items-center gap-6 w-full md:w-auto z-10 text-center sm:text-left">
-                <!-- Dept Image -->
+                <!-- Department Image -->
                 <div class="relative w-28 h-28 flex-shrink-0 cursor-pointer group" onclick="openDeptPhotoModal()">
-                    <div class="absolute inset-0 border-4 border-pink-200 rounded-full shadow-lg group-hover:border-udh-pink-500 transition-all"></div>
-                    <img id="deptImage" src="https://placehold.co/150x150/fdf2f8/ff007f?text=Dept" alt="Department Image" class="w-full h-full object-cover rounded-full border-2 border-white" onerror="this.src='https://placehold.co/150x150/fce7f3/ff007f?text=No+Image'">
-                    <div class="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity">
-                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    <div class="absolute inset-0 border-4 border-pink-300 rounded-full shadow-lg group-hover:border-udh-pink-500 transition-all animate-pulse"></div>
+                    <img id="deptImage" src="https://placehold.co/150x150/fdf2f8/ff007f?text=Dept" alt="Department Image" class="w-full h-full object-cover rounded-full border-2 border-white shadow-inner" onerror="this.src='https://placehold.co/150x150/fce7f3/ff007f?text=No+Image'">
+                    <div class="absolute inset-0 bg-pink-500/30 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity backdrop-blur-xs">
+                        <i class="fa-solid fa-magnifying-glass-plus text-xl"></i>
                     </div>
                 </div>
 
                 <div>
                     <div class="flex items-center justify-center sm:justify-start gap-2 mb-1">
-                        <span class="px-3 py-1 rounded-full bg-pink-100 text-udh-pink-600 border border-pink-200 text-xs font-bold shadow-sm">
-                            รหัส: <span id="displayDepId">กำลังโหลด...</span>
+                        <span class="pulse-badge px-3.5 py-1 rounded-full bg-gradient-to-r from-pink-100 to-rose-100 text-udh-pink-600 border border-pink-300 text-xs font-bold shadow-sm">
+                            ✨ รหัส: <span id="displayDepId">กำลังตรวจสอบ...</span>
                         </span>
                     </div>
-                    <h3 class="text-2xl md:text-3xl font-bold text-gray-800 tracking-wide mt-1" id="displayDepName">กำลังดึงข้อมูลชื่อหน่วยงาน...</h3>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-wide mt-1 drop-shadow-xs" id="displayDepName">กำลังตรวจสอบหน่วยงาน...</h3>
                     
                     <div class="mt-3 flex flex-wrap justify-center sm:justify-start gap-3 text-sm text-gray-600">
-                        <div class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full border border-pink-100 shadow-sm">
-                            <div class="w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-user-tie text-xs"></i></div>
+                        <div class="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-pink-200 shadow-sm hover-bounce">
+                            <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shadow-inner"><i class="fa-solid fa-user-tie text-xs"></i></div>
                             <span class="text-xs text-gray-500">หัวหน้า:</span>
-                            <span id="deptManager" class="font-medium text-gray-800">-</span>
+                            <span id="deptManager" class="font-bold text-gray-800">-</span>
                         </div>
-                        <div class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full border border-pink-100 shadow-sm">
-                            <div class="w-6 h-6 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-phone text-xs"></i></div>
+                        <div class="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-pink-200 shadow-sm hover-bounce">
+                            <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner"><i class="fa-solid fa-phone text-xs"></i></div>
                             <span class="text-xs text-gray-500">เบอร์โทร:</span>
-                            <span id="deptPhone" class="font-medium text-gray-800">-</span>
+                            <span id="deptPhone" class="font-bold text-gray-800">-</span>
                         </div>
                     </div>
                 </div>
@@ -242,49 +351,49 @@
             
             <!-- Quick Actions -->
             <div class="flex flex-row md:flex-col gap-3 w-full md:w-auto no-print z-10">
-                 <button onclick="window.print()" class="flex-1 md:flex-none bg-white text-gray-700 hover:text-udh-pink-600 px-5 py-2.5 rounded-full font-medium border border-gray-200 hover:border-pink-300 transition-all flex items-center justify-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-print"></i> พิมพ์รายงาน
+                 <button onclick="window.print()" class="btn-shimmer flex-1 md:flex-none bg-white text-gray-700 hover:text-udh-pink-600 px-5 py-2.5 rounded-full font-bold border-2 border-pink-200 hover:border-pink-400 transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-print text-pink-500"></i> พิมพ์รายงาน
                 </button>
-                <button onclick="fetchData()" class="flex-1 md:flex-none bg-gradient-to-r from-udh-pink-600 to-udh-pink-400 hover:from-pink-500 hover:to-pink-400 text-white px-5 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 shadow-md shadow-pink-200 transform hover:-translate-y-0.5">
-                    <i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล
+                <button onclick="fetchData()" class="btn-shimmer flex-1 md:flex-none bg-gradient-to-r from-udh-pink-600 via-pink-500 to-rose-400 hover:from-pink-600 hover:to-rose-500 text-white px-5 py-2.5 rounded-full font-bold transition-all flex items-center justify-center gap-2 shadow-md shadow-pink-200 transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-wand-magic text-yellow-200"></i> รีเฟรชข้อมูล
                 </button>
             </div>
         </div>
 
         <!-- Asset Filter & Search Bar -->
-        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 section-divider mt-6">
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 section-divider mt-8">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm">
-                    <i class="fa-solid fa-boxes-stacked text-xl"></i>
+                <div class="w-10 h-10 rounded-full bg-purple-100 border border-purple-200 flex items-center justify-center text-purple-600 shadow-sm">
+                    <i class="fa-solid fa-boxes-stacked text-lg"></i>
                 </div>
                 <div>
-                    <h2 class="text-lg md:text-xl font-bold text-gray-800">รายการครุภัณฑ์</h2>
-                    <p class="text-xs text-gray-500">จำนวนทั้งหมดในแผนกนี้</p>
+                    <h2 class="text-lg md:text-xl font-bold text-gray-800 font-itim">📦 รายการครุภัณฑ์ในหน่วยงาน</h2>
+                    <p class="text-xs text-gray-500">จำนวนครุภัณฑ์ทั้งหมดที่พบในฐานข้อมูล</p>
                 </div>
-                <span id="totalAssets" class="ml-2 bg-pink-100 text-udh-pink-600 px-4 py-1 rounded-full text-xs font-bold border border-pink-200 shadow-sm">0 รายการ</span>
+                <span id="totalAssets" class="ml-2 pulse-badge bg-gradient-to-r from-pink-100 to-rose-100 text-udh-pink-600 px-4 py-1 rounded-full text-xs font-extrabold border border-pink-300 shadow-sm">0 รายการ</span>
             </div>
 
             <!-- Search and Priority Filters -->
             <div class="flex flex-wrap items-center gap-3 no-print">
                 <div class="relative flex-1 sm:w-64">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                    <input type="text" id="searchInput" onkeyup="filterAssets()" placeholder="ค้นหารหัส / สเปค / ยี่ห้อ..." class="w-full pl-9 pr-4 py-2 bg-white border border-pink-100 rounded-full text-sm focus:outline-none focus:border-udh-pink-500 shadow-sm transition-all">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-pink-400 text-sm"></i>
+                    <input type="text" id="searchInput" onkeyup="filterAssets()" placeholder="🔍 ค้นหารหัส / สเปค / ยี่ห้อ..." class="w-full pl-9 pr-4 py-2 bg-white/90 border-2 border-pink-200 rounded-full text-sm focus:outline-none focus:border-udh-pink-500 shadow-sm transition-all placeholder:text-pink-300">
                 </div>
                 
-                <select id="statusFilter" onchange="filterAssets()" class="bg-white border border-pink-100 text-gray-700 text-xs rounded-full p-2 px-3 focus:outline-none focus:border-udh-pink-500 shadow-sm">
-                    <option value="ALL">สถานะทั้งหมด</option>
-                    <option value="มีทะเบียน">มีทะเบียน</option>
-                    <option value="ไม่มีทะเบียน">ไม่มีทะเบียน</option>
+                <select id="statusFilter" onchange="filterAssets()" class="bg-white border-2 border-pink-200 text-gray-700 text-xs font-bold rounded-full p-2 px-3 focus:outline-none focus:border-udh-pink-500 shadow-sm cursor-pointer">
+                    <option value="ALL">✨ สถานะทั้งหมด</option>
+                    <option value="มีทะเบียน">✅ มีทะเบียน</option>
+                    <option value="ไม่มีทะเบียน">❌ ไม่มีทะเบียน</option>
                 </select>
             </div>
         </div>
 
         <!-- Asset Table -->
-        <div class="clean-card overflow-hidden">
+        <div class="sparkle-card overflow-hidden">
             <div class="overflow-x-auto w-full">
                 <table class="w-full text-sm text-left whitespace-nowrap md:whitespace-normal">
                     <thead>
-                        <tr class="bg-pink-50/70 text-gray-700 font-bold border-b border-pink-100">
+                        <tr class="bg-gradient-to-r from-pink-100/90 via-pink-50 to-rose-100/90 text-gray-800 font-bold border-b border-pink-200">
                             <th class="px-5 py-4 w-12 text-center text-udh-pink-600">#</th>
                             <th class="px-5 py-4 w-20 text-center">รูปภาพ</th>
                             <th class="px-5 py-4">ข้อมูลครุภัณฑ์</th>
@@ -294,12 +403,12 @@
                             <th class="px-5 py-4 text-center no-print">จัดการ</th>
                         </tr>
                     </thead>
-                    <tbody id="assetTableBody" class="divide-y divide-pink-50 bg-white">
+                    <tbody id="assetTableBody" class="divide-y divide-pink-100/60 bg-white/80">
                         <!-- Initial Loading State -->
                         <tr>
                             <td colspan="7" class="text-center py-16">
-                                <div class="inline-block animate-pulse text-pink-300 text-5xl mb-4"><i class="fa-solid fa-boxes-stacked"></i></div>
-                                <p class="text-gray-500 font-medium text-lg">กำลังโหลดข้อมูลครุภัณฑ์...</p>
+                                <div class="inline-block animate-bounce text-pink-400 text-5xl mb-4">✨</div>
+                                <p class="text-udh-pink-600 font-bold text-lg font-itim">กำลังดึงข้อมูลครุภัณฑ์ฟรุ้งฟริ้ง...</p>
                             </td>
                         </tr>
                     </tbody>
@@ -310,17 +419,20 @@
     </main>
 
     <!-- Edit Asset Modal -->
-    <div id="editModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative animate-fadeIn border border-pink-100">
-            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200">
+    <div id="editModal" class="fixed inset-0 bg-pink-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl relative border-2 border-pink-300 transform transition-all animate-bounceIn">
+            <button onclick="closeEditModal()" class="absolute top-4 right-4 text-gray-400 hover:text-pink-600 w-8 h-8 rounded-full flex items-center justify-center bg-pink-50 hover:bg-pink-100 transition-colors">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
             <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-full bg-pink-100 text-udh-pink-600 flex items-center justify-center font-bold">
+                <div class="w-10 h-10 rounded-full bg-pink-100 text-udh-pink-600 flex items-center justify-center font-bold text-lg shadow-inner">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800">แก้ไขข้อมูลครุภัณฑ์</h3>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 font-itim">✏️ แก้ไขข้อมูลครุภัณฑ์</h3>
+                    <p class="text-xs text-pink-500">ปรับเปลี่ยนข้อมูลสเปคและระดับความสำคัญ</p>
+                </div>
             </div>
 
             <form id="editForm" onsubmit="handleSaveAsset(event)" class="space-y-4">
@@ -329,17 +441,17 @@
 
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">รหัสครุภัณฑ์ (Asset ID)</label>
-                    <input type="text" id="displayEditAssetId" disabled class="w-full px-3 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-600 font-bold">
+                    <input type="text" id="displayEditAssetId" disabled class="w-full px-3.5 py-2 bg-pink-50/50 border border-pink-200 rounded-xl text-sm text-pink-700 font-bold">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">รายละเอียด / สเปค (Detail_ID)</label>
-                    <textarea id="editDetailId" rows="3" class="w-full px-3 py-2 border border-pink-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none" required></textarea>
+                    <textarea id="editDetailId" rows="3" class="w-full px-3.5 py-2 border-2 border-pink-200 rounded-xl text-sm focus:ring-2 focus:ring-pink-400 focus:border-udh-pink-500 focus:outline-none transition-all" required></textarea>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">ระดับความสำคัญ (Priority)</label>
-                    <select id="editPriority" class="w-full px-3 py-2 border border-pink-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                    <select id="editPriority" class="w-full px-3.5 py-2 border-2 border-pink-200 rounded-xl text-sm focus:ring-2 focus:ring-pink-400 focus:border-udh-pink-500 focus:outline-none font-medium">
                         <option value="ตรวจรักษา (แพทย์)">ตรวจรักษา (แพทย์)</option>
                         <option value="ข้อมูลผู้ป่วย (พยาบาล)">ข้อมูลผู้ป่วย (พยาบาล)</option>
                         <option value="บริการ/การเงิน/ห้องบัตร/ห้องยา/Lab">บริการ/การเงิน/ห้องบัตร/ห้องยา/Lab</option>
@@ -350,12 +462,14 @@
 
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">URL รูปภาพครุภัณฑ์ (Asset_Photo)</label>
-                    <input type="url" id="editPhotoUrl" placeholder="https://..." class="w-full px-3 py-2 border border-pink-200 rounded-lg text-sm focus:ring-2 focus:ring-pink-400 focus:outline-none">
+                    <input type="url" id="editPhotoUrl" placeholder="https://..." class="w-full px-3.5 py-2 border-2 border-pink-200 rounded-xl text-sm focus:ring-2 focus:ring-pink-400 focus:border-udh-pink-500 focus:outline-none transition-all">
                 </div>
 
                 <div class="pt-3 flex justify-end gap-2">
-                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-full border border-gray-300 text-gray-600 text-sm font-medium hover:bg-gray-100">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 rounded-full bg-gradient-to-r from-udh-pink-600 to-udh-pink-400 text-white text-sm font-medium shadow-md hover:from-pink-500 hover:to-pink-400">บันทึกข้อมูล</button>
+                    <button type="button" onclick="closeEditModal()" class="px-5 py-2 rounded-full border-2 border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-100 transition-all">ยกเลิก</button>
+                    <button type="submit" class="btn-shimmer px-6 py-2 rounded-full bg-gradient-to-r from-udh-pink-600 to-pink-500 text-white text-sm font-bold shadow-md hover:from-pink-600 hover:to-rose-500 transition-all">
+                        ✨ บันทึกข้อมูล
+                    </button>
                 </div>
             </form>
         </div>
@@ -364,9 +478,9 @@
     <!-- Image Preview Lightbox Modal -->
     <div id="imageModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeImageModal()">
         <div class="relative max-w-3xl w-full flex flex-col items-center">
-            <img id="modalImage" src="" class="max-h-[80vh] max-w-full rounded-2xl shadow-2xl object-contain border-2 border-white/20">
-            <p id="modalCaption" class="text-white mt-3 font-medium text-sm bg-black/50 px-4 py-1.5 rounded-full"></p>
-            <button onclick="closeImageModal()" class="absolute -top-12 right-0 text-white hover:text-pink-300 text-2xl">
+            <img id="modalImage" src="" class="max-h-[80vh] max-w-full rounded-3xl shadow-2xl object-contain border-4 border-pink-300">
+            <p id="modalCaption" class="text-white mt-3 font-bold text-sm bg-pink-900/70 px-5 py-1.5 rounded-full border border-pink-400/40 shadow-lg font-itim"></p>
+            <button onclick="closeImageModal()" class="absolute -top-12 right-0 text-white hover:text-pink-300 text-2xl font-bold flex items-center gap-1">
                 <i class="fa-solid fa-xmark"></i> ปิด
             </button>
         </div>
@@ -382,13 +496,72 @@
         let activeDepId = '';
         let isAdminUser = false;
 
-        // ฟังก์ชันช่วยในการนำทาง ป้องกัน Error จากการตั้งค่า window.location.href เป็นค่าว่าง หรือทำงานใน iFrame Preview
+        // --- Background Floating Sparkle Canvas Effects ---
+        function initSparkles() {
+            const canvas = document.getElementById('sparkleCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedY = -(Math.random() * 0.8 + 0.2);
+                    this.opacity = Math.random() * 0.7 + 0.3;
+                    this.fade = Math.random() * 0.01 + 0.005;
+                    this.color = ['#ffb6c1', '#ff69b4', '#ffc0cb', '#e6e6fa', '#ffd700'][Math.floor(Math.random() * 5)];
+                }
+                update() {
+                    this.y += this.speedY;
+                    this.opacity -= this.fade;
+                    if (this.opacity <= 0 || this.y < 0) {
+                        this.reset();
+                        this.y = canvas.height + 10;
+                    }
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            for (let i = 0; i < 45; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // Safe Navigation Helper
         function safeNavigate(url) {
             if (!url || typeof url !== 'string' || url.trim() === '') {
                 console.warn('Navigation cancelled: URL is empty or invalid.');
                 return;
             }
-            // ตรวจสอบสภาพแวดล้อม Preview / blob iFrame
             if (window.location.protocol === 'blob:' || window.location.origin === 'null' || !window.location.hostname) {
                 console.warn('Preview mode detected: Prevented navigation to ' + url);
                 return;
@@ -401,26 +574,25 @@
         }
 
         window.onload = function() {
+            initSparkles();
             if (checkAuth()) {
                 fetchData();
             }
         };
 
-        // ตรวจสอบการ Login และสิทธิ์ผู้ใช้งาน
+        // --- STREAMING_CHUNK:Checking Auth and Fetching Department List... -->
+        // Check Authentication and User Rights
         function checkAuth() {
             const token = localStorage.getItem('authToken');
             const userId = localStorage.getItem('userId');
             const userName = localStorage.getItem('userName') || 'เจ้าหน้าที่ IT';
-            const depId = localStorage.getItem('depId') || '';
-            const userTypeName = localStorage.getItem('userTypeName') || 'User'; // รับค่าสิทธิ์ผู้ใช้งาน (Default: User)
+            const userTypeName = localStorage.getItem('userTypeName') || 'User';
 
-            // หากไม่มี Token หรือ UserId ให้ส่งกลับไปหน้าเข้าสู่ระบบ
             if (!token || !userId) {
-                // กรณีรันในสภาพแวดล้อม Preview ให้ข้ามการเปลี่ยนหน้าอัตโนมัติเพื่อป้องกัน Error
                 if (window.location.protocol === 'blob:' || window.location.origin === 'null' || !window.location.hostname) {
                     console.warn('Running in Preview Mode: Bypassing auth redirect for testing.');
                     isAdminUser = (userTypeName.trim().toLowerCase() === 'admin');
-                    document.getElementById('displayUserName').innerText = `${userName} (${userTypeName})`;
+                    document.getElementById('displayUserName').innerText = `✨ ${userName} (${userTypeName})`;
                     return true;
                 }
 
@@ -428,22 +600,20 @@
                     icon: 'warning',
                     title: 'กรุณาเข้าสู่ระบบ',
                     text: 'เซสชันหมดอายุหรือยังไม่ได้เข้าสู่ระบบ',
-                    confirmButtonColor: '#ff8da1'
+                    confirmButtonColor: '#ff007f'
                 }).then(() => {
                     safeNavigate('index.html');
                 });
                 return false;
             }
 
-            // ตรวจสอบว่าเป็น Admin หรือไม่
             isAdminUser = (userTypeName.trim().toLowerCase() === 'admin');
-
-            document.getElementById('displayUserName').innerText = `${userName} (${userTypeName})`;
+            document.getElementById('displayUserName').innerText = `✨ ${userName} (${userTypeName})`;
             return true;
         }
 
         function showOverlay(text = 'กำลังโหลดข้อมูล...') {
-            document.getElementById('overlayText').innerText = text;
+            document.getElementById('overlayText').innerHTML = `<span>✨ ${text} ✨</span>`;
             document.getElementById('loadingOverlay').style.display = 'flex';
         }
 
@@ -451,7 +621,7 @@
             document.getElementById('loadingOverlay').style.display = 'none';
         }
 
-        // ดึงรายชื่อหน่วยงานทั้งหมด (คัดกรองเฉพาะหน่วยงานที่มีข้อมูลเท่านั้น)
+        // Fetch Department List for Admin
         async function fetchDeptList() {
             try {
                 const response = await fetch(`${API_URL}?action=getDeptList`);
@@ -459,9 +629,8 @@
                 const select = document.getElementById('deptSelect');
                 
                 if (Array.isArray(deptList) && deptList.length > 0) {
-                    select.innerHTML = '';
+                    select.innerHTML = '<option value="">-- เลือกหน่วยงาน --</option>';
                     
-                    // กรองคัดเลือกเฉพาะหน่วยงานที่มีข้อมูลสมบูรณ์ (มีทั้ง ID และ Name)
                     const validDepts = deptList.filter(dept => {
                         const id = (dept.DEPT_ID || dept.DEP_ID || dept.id || '').toString().trim();
                         const name = (dept.DEPNAME || dept['ชื่อหน่วยงาน'] || dept.name || '').toString().trim();
@@ -487,53 +656,80 @@
             }
         }
 
+        // --- STREAMING_CHUNK:Fetching Department and Asset Data from API... -->
         async function fetchData() {
             if (!checkAuth()) return;
 
             const urlParams = new URLSearchParams(window.location.search);
-            const paramDepId = urlParams.get('DEP_ID');
-            const userDepId = localStorage.getItem('depId') || '';
+            const hasDepParam = urlParams.has('DEP_ID');
+            const paramDepId = (urlParams.get('DEP_ID') || '').trim();
+            const userDepId = (localStorage.getItem('depId') || '').trim();
 
             let targetDepId = '';
             const deptSelectWrapper = document.getElementById('deptSelectWrapper');
 
             if (isAdminUser) {
-                // หากเป็น Admin ให้แสดงผลและเลือกได้ทุกหน่วยงาน
                 deptSelectWrapper.classList.remove('hidden');
                 
-                // โหลดรายชื่อแผนกเข้า Dropdown (เฉพาะหน่วยงานที่มีข้อมูล)
                 if (document.getElementById('deptSelect').options.length <= 1) {
                     await fetchDeptList();
                 }
 
                 const selectedInDropdown = document.getElementById('deptSelect').value;
-                targetDepId = paramDepId || selectedInDropdown || localStorage.getItem('selectedDepId') || userDepId;
+
+                if (hasDepParam && paramDepId !== '') {
+                    targetDepId = paramDepId;
+                } else if (selectedInDropdown !== '') {
+                    targetDepId = selectedInDropdown;
+                } else if (localStorage.getItem('selectedDepId')) {
+                    targetDepId = localStorage.getItem('selectedDepId');
+                } else if (userDepId !== '') {
+                    targetDepId = userDepId;
+                }
 
                 if (targetDepId && document.getElementById('deptSelect').querySelector(`option[value="${targetDepId}"]`)) {
                     document.getElementById('deptSelect').value = targetDepId;
-                } else if (document.getElementById('deptSelect').options.length > 0) {
-                    targetDepId = document.getElementById('deptSelect').value;
                 }
             } else {
-                // หากไม่ใช่ Admin ให้แสดงผลตาม Link รับค่า DEPT_ID หรือ depId ที่เข้าสู่ระบบ
                 deptSelectWrapper.classList.add('hidden');
-                targetDepId = paramDepId || userDepId;
+                targetDepId = (paramDepId !== '') ? paramDepId : userDepId;
             }
 
-            if (!targetDepId) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ไม่พบรหัสหน่วยงาน',
-                    text: 'ไม่สามารถระบุรหัสหน่วยงาน (DEP_ID) ได้ กรุณาเข้าสู่ระบบใหม่',
-                    confirmButtonColor: '#ff8da1'
-                });
+            // Guard against empty DEPT_ID
+            if (!targetDepId || targetDepId.trim() === '') {
+                hideOverlay();
+                document.getElementById('displayDepId').innerText = 'ไม่ระบุ';
+                document.getElementById('displayDepName').innerText = 'ไม่พบรหัสหน่วยงาน (กรุณาระบุ DEPT_ID)';
+                document.getElementById('deptManager').innerText = '-';
+                document.getElementById('deptPhone').innerText = '-';
+                document.getElementById('deptImage').src = 'https://placehold.co/150x150/fdf2f8/ff007f?text=No+ID';
+                
+                const tbody = document.getElementById('assetTableBody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-12 text-rose-500 font-bold">
+                            <i class="fa-solid fa-triangle-exclamation text-4xl mb-3 text-rose-400 block animate-bounce"></i>
+                            ไม่สามารถดึงข้อมูลได้ เนื่องจากไม่พบรหัสหน่วยงาน (DEPT_ID) ใน URL หรือในระบบ
+                        </td>
+                    </tr>`;
+                document.getElementById('totalAssets').innerText = '0 รายการ';
+
+                if (!isAdminUser) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'ไม่พบรหัสหน่วยงาน',
+                        text: 'กรุณาระบุค่า DEPT_ID ใน URL เช่น ?DEPT_ID=IT-001 หรือเข้าสู่ระบบใหม่',
+                        confirmButtonColor: '#ff007f'
+                    });
+                }
                 return;
             }
 
             activeDepId = targetDepId;
             document.getElementById('displayDepId').innerText = targetDepId;
+            document.getElementById('displayDepName').innerText = 'กำลังดึงข้อมูลชื่อหน่วยงาน...';
             
-            showOverlay('กำลังดึงข้อมูลจากเซิร์ฟเวอร์...');
+            showOverlay('กำลังดึงข้อมูลฟรุ้งฟริ้งจากเซิร์ฟเวอร์...');
 
             try {
                 const url = `${API_URL}?action=getFullData&DEP_ID=${encodeURIComponent(targetDepId)}`;
@@ -563,21 +759,24 @@
             } catch (error) {
                 hideOverlay();
                 console.error("Fetch Error:", error);
+                document.getElementById('displayDepName').innerText = `หน่วยงาน ${targetDepId} (ข้อผิดพลาดการเชื่อมต่อ)`;
+                
                 Swal.fire({
                     icon: 'error',
                     title: 'ข้อผิดพลาดการเชื่อมต่อ',
                     text: 'ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
-                    confirmButtonColor: '#ff8da1'
+                    confirmButtonColor: '#ff007f'
                 });
             }
         }
 
         function switchDepartment(depId) {
-            if (!isAdminUser) return;
+            if (!isAdminUser || !depId) return;
             localStorage.setItem('selectedDepId', depId);
             fetchData();
         }
 
+        // --- STREAMING_CHUNK:Rendering Department Info and Asset Rows... -->
         function renderDepartment(dept, fallbackId) {
             const deptName = dept['DEPNAME'] || dept['ชื่อหน่วยงาน'] || dept['Department'] || `หน่วยงาน ${fallbackId}`;
             const manager = dept['HEADNAME'] || dept['หัวหน้าหน่วยงาน'] || dept['Manager'] || '-';
@@ -598,7 +797,7 @@
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center py-16 text-gray-400 font-medium">
-                            <i class="fa-solid fa-box-open text-pink-200 text-5xl mb-3 block"></i> 
+                            <div class="text-5xl mb-3 animate-pulse">🌸</div> 
                             ไม่พบข้อมูลครุภัณฑ์ในหน่วยงานนี้
                         </td>
                     </tr>`;
@@ -620,35 +819,35 @@
                 }
 
                 const imgElement = photoUrl 
-                    ? `<img src="${photoUrl}" class="w-14 h-14 object-cover rounded-xl border border-pink-100 shadow-sm mx-auto cursor-pointer hover:scale-105 transition-transform" onclick="openImageModal('${photoUrl}', '${assetId} - ${typeName}')" title="คลิกเพื่อดูรูปขยาย">`
-                    : `<div class="w-14 h-14 bg-pink-50/50 rounded-xl border-2 border-dashed border-pink-100 flex items-center justify-center text-pink-300 mx-auto"><i class="fa-regular fa-image text-xl"></i></div>`;
+                    ? `<img src="${photoUrl}" class="w-14 h-14 object-cover rounded-2xl border-2 border-pink-200 shadow-md mx-auto cursor-pointer hover:scale-110 transition-transform hover:border-pink-500" onclick="openImageModal('${photoUrl}', '${assetId} - ${typeName}')" title="คลิกเพื่อดูรูปขยาย">`
+                    : `<div class="w-14 h-14 bg-pink-50/70 rounded-2xl border-2 border-dashed border-pink-200 flex items-center justify-center text-pink-300 mx-auto shadow-inner"><i class="fa-regular fa-image text-xl"></i></div>`;
 
                 let statusBadge = regStatus.includes('มี') || regStatus === 'Active'
-                    ? `<span class="badge-print inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold border border-emerald-200 shadow-sm"><i class="fa-solid fa-circle-check"></i> ${regStatus}</span>`
-                    : `<span class="badge-print inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 text-rose-500 text-xs font-bold border border-rose-200 shadow-sm"><i class="fa-solid fa-circle-xmark"></i> ${regStatus}</span>`;
+                    ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold border border-emerald-200 shadow-xs"><i class="fa-solid fa-circle-check"></i> ${regStatus}</span>`
+                    : `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-50 text-rose-500 text-xs font-bold border border-rose-200 shadow-xs"><i class="fa-solid fa-circle-xmark"></i> ${regStatus}</span>`;
 
                 html += `
-                    <tr class="hover:bg-pink-50/40 transition-colors">
-                        <td class="px-5 py-4 text-center text-gray-400 font-medium">${index + 1}</td>
+                    <tr class="hover:bg-pink-50/60 transition-colors">
+                        <td class="px-5 py-4 text-center text-pink-400 font-bold">${index + 1}</td>
                         <td class="px-5 py-4">${imgElement}</td>
                         <td class="px-5 py-4">
-                            <p class="font-bold text-gray-800 text-base">${assetId}</p>
-                            <p class="text-xs text-udh-pink-600 mt-1 flex items-center gap-1 font-medium"><i class="fa-solid fa-tag text-[10px]"></i> ${typeName}</p>
+                            <p class="font-extrabold text-gray-800 text-base flex items-center gap-1">${assetId}</p>
+                            <p class="text-xs text-udh-pink-600 mt-1 flex items-center gap-1 font-bold"><i class="fa-solid fa-tag text-[10px]"></i> ${typeName}</p>
                         </td>
                         <td class="px-5 py-4">
                             <p class="text-sm text-gray-700 whitespace-normal font-medium leading-relaxed">${detail}</p>
                             <div class="flex items-center gap-2 mt-1.5">
-                                <span class="text-[11px] text-pink-600 bg-pink-50 px-2.5 py-0.5 rounded-md font-medium border border-pink-100"><i class="fa-regular fa-calendar mr-1"></i> อายุ: ${age}</span>
+                                <span class="text-[11px] text-pink-600 bg-pink-100/80 px-3 py-0.5 rounded-full font-bold border border-pink-200"><i class="fa-regular fa-calendar-check mr-1"></i> อายุ: ${age}</span>
                             </div>
                         </td>
                         <td class="px-5 py-4 text-center">
-                            <span class="text-xs bg-indigo-50 text-indigo-600 border border-indigo-100 px-3 py-1 rounded-full font-bold shadow-sm">${priority}</span>
+                            <span class="text-xs bg-gradient-to-r from-purple-50 to-indigo-50 text-indigo-600 border border-indigo-200 px-3 py-1 rounded-full font-bold shadow-xs">${priority}</span>
                         </td>
                         <td class="px-5 py-4 text-center">
                             ${statusBadge}
                         </td>
                         <td class="px-5 py-4 text-center no-print">
-                            <button onclick="openEditModal(${index})" class="w-8 h-8 rounded-full bg-pink-50 text-udh-pink-600 hover:bg-udh-pink-600 hover:text-white transition-all inline-flex items-center justify-center shadow-sm" title="แก้ไขข้อมูล">
+                            <button onclick="openEditModal(${index})" class="w-8 h-8 rounded-full bg-pink-100 text-udh-pink-600 hover:bg-udh-pink-600 hover:text-white transition-all inline-flex items-center justify-center shadow-xs hover:scale-110" title="แก้ไขข้อมูล">
                                 <i class="fa-solid fa-pen-to-square text-xs"></i>
                             </button>
                         </td>
@@ -659,6 +858,7 @@
             tbody.innerHTML = html;
         }
 
+        // Filter Assets by Search or Status
         function filterAssets() {
             const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
             const statusVal = document.getElementById('statusFilter').value;
@@ -676,6 +876,7 @@
             renderAssets(filtered);
         }
 
+        // --- STREAMING_CHUNK:Editing Modal Logic and Logout Handling... -->
         function openEditModal(index) {
             const asset = rawAssetLogs[index];
             if (!asset) return;
@@ -703,7 +904,7 @@
             const photoUrl = document.getElementById('editPhotoUrl').value;
             const noid = document.getElementById('editNoid').value;
 
-            showOverlay('กำลังบันทึกข้อมูลไปยังเซิร์ฟเวอร์...');
+            showOverlay('กำลังบันทึกข้อมูลฟรุ้งฟริ้ง...');
 
             try {
                 const formData = new URLSearchParams();
@@ -735,7 +936,7 @@
 
                 Swal.fire({
                     icon: 'success',
-                    title: 'บันทึกสำเร็จ',
+                    title: '✨ บันทึกสำเร็จ ✨',
                     text: resData.message || 'อัปเดตข้อมูลครุภัณฑ์เรียบร้อยแล้ว',
                     confirmButtonColor: '#ff007f',
                     timer: 1800
@@ -766,7 +967,7 @@
 
         function handleLogout() {
             Swal.fire({
-                title: 'ออกจากระบบ',
+                title: 'ออกจากระบบ 🌸',
                 text: "คุณต้องการออกจากระบบ IT SUPPORT ใช่หรือไม่?",
                 icon: 'question',
                 showCancelButton: true,
