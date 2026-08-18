@@ -382,34 +382,63 @@
         let activeDepId = '';
         let isAdminUser = false;
 
+        // ฟังก์ชันช่วยในการนำทาง ป้องกัน Error จากการตั้งค่า window.location.href เป็นค่าว่าง หรือทำงานใน iFrame Preview
+        function safeNavigate(url) {
+            if (!url || typeof url !== 'string' || url.trim() === '') {
+                console.warn('Navigation cancelled: URL is empty or invalid.');
+                return;
+            }
+            // ตรวจสอบสภาพแวดล้อม Preview / blob iFrame
+            if (window.location.protocol === 'blob:' || window.location.origin === 'null' || !window.location.hostname) {
+                console.warn('Preview mode detected: Prevented navigation to ' + url);
+                return;
+            }
+            try {
+                window.location.href = url;
+            } catch (e) {
+                console.error('Redirect Error:', e);
+            }
+        }
+
         window.onload = function() {
             if (checkAuth()) {
                 fetchData();
             }
         };
 
+        // ตรวจสอบการ Login และสิทธิ์ผู้ใช้งาน
         function checkAuth() {
             const token = localStorage.getItem('authToken');
-            
-            if (!token) {
+            const userId = localStorage.getItem('userId');
+            const userName = localStorage.getItem('userName') || 'เจ้าหน้าที่ IT';
+            const depId = localStorage.getItem('depId') || '';
+            const userTypeName = localStorage.getItem('userTypeName') || 'User'; // รับค่าสิทธิ์ผู้ใช้งาน (Default: User)
+
+            // หากไม่มี Token หรือ UserId ให้ส่งกลับไปหน้าเข้าสู่ระบบ
+            if (!token || !userId) {
+                // กรณีรันในสภาพแวดล้อม Preview ให้ข้ามการเปลี่ยนหน้าอัตโนมัติเพื่อป้องกัน Error
+                if (window.location.protocol === 'blob:' || window.location.origin === 'null' || !window.location.hostname) {
+                    console.warn('Running in Preview Mode: Bypassing auth redirect for testing.');
+                    isAdminUser = (userTypeName.trim().toLowerCase() === 'admin');
+                    document.getElementById('displayUserName').innerText = `${userName} (${userTypeName})`;
+                    return true;
+                }
+
                 Swal.fire({
                     icon: 'warning',
                     title: 'กรุณาเข้าสู่ระบบ',
-                    text: 'คุณยังไม่ได้เข้าสู่ระบบ IT UDON HOSP',
-                    confirmButtonColor: '#ff007f'
+                    text: 'เซสชันหมดอายุหรือยังไม่ได้เข้าสู่ระบบ',
+                    confirmButtonColor: '#ff8da1'
                 }).then(() => {
-                    window.location.href = 'index.html';
+                    safeNavigate('index.html');
                 });
                 return false;
             }
-            
-            const userName = localStorage.getItem('userName') || 'เจ้าหน้าที่ IT';
-            const userTypeName = localStorage.getItem('userTypeName') || localStorage.getItem('userType') || localStorage.getItem('userRole') || '';
-            
+
             // ตรวจสอบว่าเป็น Admin หรือไม่
             isAdminUser = (userTypeName.trim().toLowerCase() === 'admin');
-            
-            document.getElementById('displayUserName').innerText = userName + (userTypeName ? ` (${userTypeName})` : '');
+
+            document.getElementById('displayUserName').innerText = `${userName} (${userTypeName})`;
             return true;
         }
 
@@ -422,6 +451,7 @@
             document.getElementById('loadingOverlay').style.display = 'none';
         }
 
+        // ดึงรายชื่อหน่วยงานทั้งหมด (คัดกรองเฉพาะหน่วยงานที่มีข้อมูลเท่านั้น)
         async function fetchDeptList() {
             try {
                 const response = await fetch(`${API_URL}?action=getDeptList`);
@@ -430,16 +460,27 @@
                 
                 if (Array.isArray(deptList) && deptList.length > 0) {
                     select.innerHTML = '';
-                    deptList.forEach(dept => {
-                        const id = dept.DEPT_ID || dept.DEP_ID || dept.id || '';
-                        const name = dept.DEPNAME || dept['ชื่อหน่วยงาน'] || dept.name || id;
-                        if (id) {
+                    
+                    // กรองคัดเลือกเฉพาะหน่วยงานที่มีข้อมูลสมบูรณ์ (มีทั้ง ID และ Name)
+                    const validDepts = deptList.filter(dept => {
+                        const id = (dept.DEPT_ID || dept.DEP_ID || dept.id || '').toString().trim();
+                        const name = (dept.DEPNAME || dept['ชื่อหน่วยงาน'] || dept.name || '').toString().trim();
+                        return id !== '' && name !== '';
+                    });
+
+                    if (validDepts.length > 0) {
+                        validDepts.forEach(dept => {
+                            const id = (dept.DEPT_ID || dept.DEP_ID || dept.id || '').toString().trim();
+                            const name = (dept.DEPNAME || dept['ชื่อหน่วยงาน'] || dept.name || '').toString().trim();
+                            
                             const opt = document.createElement('option');
                             opt.value = id;
                             opt.textContent = `${id} : ${name}`;
                             select.appendChild(opt);
-                        }
-                    });
+                        });
+                    } else {
+                        select.innerHTML = '<option value="">ไม่พบหน่วยงานที่มีข้อมูล</option>';
+                    }
                 }
             } catch (e) {
                 console.error("Error loading department list:", e);
@@ -454,14 +495,13 @@
             const userDepId = localStorage.getItem('depId') || '';
 
             let targetDepId = '';
-
             const deptSelectWrapper = document.getElementById('deptSelectWrapper');
 
             if (isAdminUser) {
-                // หากเป็น Admin ให้สามารถเลือกหน่วยงานได้ทุกหน่วยงาน
+                // หากเป็น Admin ให้แสดงผลและเลือกได้ทุกหน่วยงาน
                 deptSelectWrapper.classList.remove('hidden');
                 
-                // โหลดรายชื่อแผนกเข้า Dropdown
+                // โหลดรายชื่อแผนกเข้า Dropdown (เฉพาะหน่วยงานที่มีข้อมูล)
                 if (document.getElementById('deptSelect').options.length <= 1) {
                     await fetchDeptList();
                 }
@@ -469,8 +509,10 @@
                 const selectedInDropdown = document.getElementById('deptSelect').value;
                 targetDepId = paramDepId || selectedInDropdown || localStorage.getItem('selectedDepId') || userDepId;
 
-                if (targetDepId) {
+                if (targetDepId && document.getElementById('deptSelect').querySelector(`option[value="${targetDepId}"]`)) {
                     document.getElementById('deptSelect').value = targetDepId;
+                } else if (document.getElementById('deptSelect').options.length > 0) {
+                    targetDepId = document.getElementById('deptSelect').value;
                 }
             } else {
                 // หากไม่ใช่ Admin ให้แสดงผลตาม Link รับค่า DEPT_ID หรือ depId ที่เข้าสู่ระบบ
@@ -483,7 +525,7 @@
                     icon: 'error',
                     title: 'ไม่พบรหัสหน่วยงาน',
                     text: 'ไม่สามารถระบุรหัสหน่วยงาน (DEP_ID) ได้ กรุณาเข้าสู่ระบบใหม่',
-                    confirmButtonColor: '#ff007f'
+                    confirmButtonColor: '#ff8da1'
                 });
                 return;
             }
@@ -525,7 +567,7 @@
                     icon: 'error',
                     title: 'ข้อผิดพลาดการเชื่อมต่อ',
                     text: 'ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
-                    confirmButtonColor: '#ff007f'
+                    confirmButtonColor: '#ff8da1'
                 });
             }
         }
@@ -737,7 +779,8 @@
                     showOverlay('กำลังออกจากระบบ...');
                     localStorage.clear();
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        safeNavigate('index.html');
+                        hideOverlay();
                     }, 600);
                 }
             });
