@@ -634,21 +634,40 @@
                     const validDepts = deptList.filter(dept => {
                         const id = (dept.DEPT_ID || dept.DEP_ID || dept.id || '').toString().trim();
                         const name = (dept.DEPNAME || dept['ชื่อหน่วยงาน'] || dept.name || '').toString().trim();
-                        return id !== '' && name !== '';
+                        
+                        if (id === '' || name === '') return false;
+
+                        // ตรวจสอบฟิลด์จำนวนครุภัณฑ์ที่อาจส่งมาจาก API
+                        const count = dept.assetCount ?? dept.AssetCount ?? dept.count ?? dept.Count ?? dept.total ?? dept.Total ?? dept['จำนวน'] ?? dept['จำนวนครุภัณฑ์'];
+                        
+                        // ถ้าระบบหลังบ้านมีส่งจำนวนมาด้วย ให้กรองเอาเฉพาะหน่วยงานที่มากกว่า 0
+                        if (count !== undefined && count !== null && count !== '') {
+                            return Number(count) > 0; 
+                        }
+                        
+                        // กรณีไม่ได้ส่งฟิลด์จำนวนมา จะถือว่าส่งมาเฉพาะรายชื่อที่มีอยู่แล้ว
+                        return true;
                     });
 
                     if (validDepts.length > 0) {
                         validDepts.forEach(dept => {
                             const id = (dept.DEPT_ID || dept.DEP_ID || dept.id || '').toString().trim();
                             const name = (dept.DEPNAME || dept['ชื่อหน่วยงาน'] || dept.name || '').toString().trim();
+                            const count = dept.assetCount ?? dept.AssetCount ?? dept.count ?? dept.Count ?? dept.total ?? dept.Total ?? dept['จำนวน'] ?? dept['จำนวนครุภัณฑ์'];
                             
                             const opt = document.createElement('option');
                             opt.value = id;
-                            opt.textContent = `${id} : ${name}`;
+                            
+                            // แสดงตัวเลขจำนวนรายการต่อท้าย ถ้ามีข้อมูล
+                            if (count !== undefined && count !== null && count !== '') {
+                                opt.textContent = `${id} : ${name} (${count} รายการ)`;
+                            } else {
+                                opt.textContent = `${id} : ${name}`;
+                            }
                             select.appendChild(opt);
                         });
                     } else {
-                        select.innerHTML = '<option value="">ไม่พบหน่วยงานที่มีข้อมูล</option>';
+                        select.innerHTML = '<option value="">ไม่พบหน่วยงานที่มีข้อมูลครุภัณฑ์</option>';
                     }
                 }
             } catch (e) {
