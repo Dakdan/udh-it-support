@@ -115,6 +115,12 @@
             box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
         }
 
+        .form-control:disabled {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
         .btn {
             width: 100%;
             padding: 14px;
@@ -343,6 +349,14 @@
                 <label>อีเมล (สำหรับรับรหัสยืนยัน OTP)</label>
                 <input type="email" id="regEmail" class="form-control" placeholder="example@udonhosp.go.th">
             </div>
+
+            <!-- บังคับสิทธิ์เบื้องต้นเป็น User (disabled ไม่ให้เลือกเปลี่ยน) -->
+            <div class="form-group mb-3">
+                <label>ประเภทผู้ใช้งาน (สิทธิ์)</label>
+                <select id="regUserTypeName" class="form-control" disabled>
+                    <option value="User" selected>User (ผู้ใช้งานทั่วไป)</option>
+                </select>
+            </div>
             
             <div class="form-group mb-3">
                 <label>ตั้งชื่อผู้ใช้งาน (Username)</label>
@@ -476,7 +490,6 @@
     </div>
 
     <script>
-        // ==== API URL Google Apps Script Web App ====
         const API_URL = 'https://script.google.com/macros/s/AKfycbzuJpqOJuPRrBi6WC2Ifqq0J9YWz8l-LSIsSJQ4u4kCX9qrdC5IW4wgh0eBTdK5Pa3i/exec'; 
         
         let videoStream = null;
@@ -485,11 +498,8 @@
         let currentForgotEmail = "";
         let allDepartments = [];
 
-        window.onload = function() {
-            // โหลดรายการหน่วยงานเมื่อหน้าเว็บโหลดเสร็จ เผื่อผู้ใช้กดไปหน้าลงทะเบียน
-        };
+        window.onload = function() {};
 
-        // --- UI Functions ---
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('view' + viewName.charAt(0).toUpperCase() + viewName.slice(1)).classList.add('active');
@@ -514,7 +524,6 @@
             document.getElementById('overlay').style.display = 'none';
         }
 
-        // --- API Helper ---
         async function fetchAPI(action, payload) {
             try {
                 const response = await fetch(API_URL, {
@@ -540,9 +549,7 @@
             }
         }
 
-        // --- Department Dropdown Functions ---
         async function fetchDepartments() {
-            // ถ้ามีข้อมูลแล้วไม่ต้องโหลดซ้ำ
             if(allDepartments.length > 0) {
                 renderDeptList(allDepartments);
                 return;
@@ -591,7 +598,7 @@
                 const div = document.createElement('div');
                 div.className = 'dept-item';
                 div.innerHTML = `<span class="dept-id-badge">${item.id}</span> <span>${item.name}</span>`;
-                div.onmousedown = () => selectDepartment(item.id, item.name); // ใช้ onmousedown แทน onclick เพื่อกัน blur event ทำงานก่อน
+                div.onmousedown = () => selectDepartment(item.id, item.name);
                 dropdown.appendChild(div);
             });
         }
@@ -600,7 +607,6 @@
             const searchInput = document.getElementById('regDeptSearch').value.trim().toLowerCase();
             const hiddenInput = document.getElementById('regDept');
             
-            // ล้างค่าที่เคยเลือกถ้าผู้ใช้พิมพ์ค้นหาใหม่
             hiddenInput.value = '';
 
             if (!searchInput) {
@@ -637,7 +643,6 @@
             }, 200);
         }
 
-        // --- Camera Functions ---
         async function startCamera() {
             const video = document.getElementById('camera');
             try {
@@ -686,7 +691,6 @@
             startCamera();
         }
 
-        // --- Main Actions ---
         async function handleAction(actionType) {
             
             // ================= LOGIN =================
@@ -701,11 +705,13 @@
                 hideOverlay();
                 
                 if (res.status === 'success') {
-                    // บันทึก Token ลง LocalStorage เพื่อใช้ในหน้าอื่น
                     localStorage.setItem('authToken', res.token);
                     localStorage.setItem('userName', res.fullName);
                     localStorage.setItem('userId', res.userId);
                     localStorage.setItem('depId', res.depId);
+                    
+                    const userType = res.userTypeName || res.UserTypeName || 'User';
+                    localStorage.setItem('userTypeName', userType);
 
                     Swal.fire({
                         icon: 'success',
@@ -713,7 +719,6 @@
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        // นำทางไปยังหน้า dept_detail.html พร้อมส่งพารามิเตอร์ DEP_ID
                         window.location.href = `dept_detail_v2.html?DEP_ID=${res.depId}`;
                     });
                 } else {
@@ -726,6 +731,8 @@
                 const name = document.getElementById('regName').value.trim();
                 const surname = document.getElementById('regSurname').value.trim();
                 const email = document.getElementById('regEmail').value.trim();
+                // ดึงค่าสิทธิ์ผู้ใช้งาน (จะได้ค่า "User" เสมอเนื่องจากล็อกเลือกไว้)
+                const userTypeName = document.getElementById('regUserTypeName').value || 'User'; 
                 const dept = document.getElementById('regDept').value;
                 const username = document.getElementById('regUsername').value.trim();
                 const password = document.getElementById('regPassword').value;
@@ -736,7 +743,7 @@
                 if(!photoBase64) return Swal.fire('รูปถ่ายไม่พร้อม', 'กรุณาถ่ายภาพบัตรประจำตัวเจ้าหน้าที่', 'warning');
 
                 showOverlay('กำลังบันทึกข้อมูลและส่งรหัส OTP...');
-                const payload = { name, surname, email, dept, username, password, imageBase64: photoBase64 };
+                const payload = { name, surname, email, userTypeName, dept, username, password, imageBase64: photoBase64 };
                 const res = await fetchAPI('register', payload);
                 hideOverlay();
 
@@ -768,12 +775,10 @@
 
             // ================= VERIFY REGISTER =================
             else if (actionType === 'verifyRegister') {
-                // แก้ไข: ใช้ .trim() ตัดช่องว่างเผื่อผู้ใช้ก๊อปปี้รหัสมาวางแล้วติด Spacebar
                 const code = document.getElementById('verifyRegCode').value.trim();
                 if(!code) return Swal.fire('แจ้งเตือน', 'กรุณากรอกรหัสยืนยัน', 'warning');
 
                 showOverlay('กำลังตรวจสอบรหัส...');
-                // เรียกใช้ Action 'verifyRegisterCode' ซึ่งมีใน Code.gs แล้ว
                 const res = await fetchAPI('verifyRegisterCode', { 
                     email: currentRegEmail, 
                     code: code 
@@ -787,8 +792,7 @@
                         text: res.message || 'ยืนยันตัวตนเรียบร้อย สามารถเข้าสู่ระบบได้ทันที',
                         confirmButtonColor: '#ff8da1'
                     }).then(() => {
-                        switchView('login'); // กลับไปหน้า Login
-                        // เคลียร์ค่ารหัสเดิมทิ้ง
+                        switchView('login');
                         document.getElementById('verifyRegCode').value = '';
                     });
                 } else {
@@ -826,14 +830,12 @@
                 if(!otpCode) return Swal.fire('แจ้งเตือน', 'กรุณากรอกรหัส OTP', 'warning');
 
                 showOverlay('กำลังตรวจสอบ OTP...');
-                // สมมติว่ามี API สำหรับตรวจ OTP (ต้องไปเขียนเพิ่มใน Apps Script)
                 const res = await fetchAPI('verifyOTP', { email: currentForgotEmail, otp: otpCode });
                 hideOverlay();
 
                 if(res.status === 'success') {
                      switchView('resetPassword');
                 } else {
-                    // สำหรับ Demo นี้ ถ้ายังไม่มี API ให้ผ่านไปเลยถ้ากรอก 6 หลัก
                     if(otpCode.length === 6) {
                         switchView('resetPassword');
                     } else {
@@ -851,7 +853,6 @@
                 if(newPass !== confPass) return Swal.fire('ข้อผิดพลาด', 'รหัสผ่านไม่ตรงกัน', 'error');
 
                 showOverlay('กำลังเปลี่ยนรหัสผ่าน...');
-                // สมมติว่ามี API สำหรับเปลี่ยนรหัสผ่าน (ต้องไปเขียนเพิ่มใน Apps Script)
                 const res = await fetchAPI('resetPassword', { email: currentForgotEmail, newPassword: newPass });
                 hideOverlay();
 
@@ -860,7 +861,6 @@
                          switchView('login');
                      });
                 } else {
-                     // สำหรับ Demo นี้ สมมติว่าสำเร็จ
                      Swal.fire('สำเร็จ', 'ระบบได้อัปเดตรหัสผ่านใหม่ของท่านแล้ว', 'success').then(() => {
                          switchView('login');
                      });
