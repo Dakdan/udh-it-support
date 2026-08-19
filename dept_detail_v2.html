@@ -748,7 +748,7 @@
             document.getElementById('displayDepId').innerText = targetDepId;
             document.getElementById('displayDepName').innerText = 'กำลังดึงข้อมูลชื่อหน่วยงาน...';
             
-            showOverlay('กำลังดึงข้อมูลฟรุ้งฟริ้งจากเซิร์ฟเวอร์...');
+            showOverlay('กำลังดึงข้อมูลจากเซิร์ฟเวอร์...');
 
             try {
                 const url = `${API_URL}?action=getFullData&DEP_ID=${encodeURIComponent(targetDepId)}`;
@@ -923,7 +923,7 @@
             const photoUrl = document.getElementById('editPhotoUrl').value;
             const noid = document.getElementById('editNoid').value;
 
-            showOverlay('กำลังบันทึกข้อมูลฟรุ้งฟริ้ง...');
+            showOverlay('กำลังบันทึกข้อมูล...');
 
             try {
                 const formData = new URLSearchParams();
